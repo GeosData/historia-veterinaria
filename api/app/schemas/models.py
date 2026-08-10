@@ -2,7 +2,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 DateValue = date
 
@@ -10,12 +10,14 @@ DateValue = date
 class ClinicCreate(BaseModel):
     name: str
     vet_name: str
-    email: EmailStr
 
 
-class ClinicRegistered(BaseModel):
+class Clinic(BaseModel):
     id: str
-    api_key: str
+    name: str
+    vet_name: str | None = None
+    email: str
+    created_at: datetime
 
 
 class OwnerCreate(BaseModel):

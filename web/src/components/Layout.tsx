@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { logout } from '../lib/firebase'
 import { useAuthStore } from '../store/auth'
 import { Button } from './Button'
 
@@ -10,10 +11,9 @@ const navItems = [
 export function Layout() {
   const navigate = useNavigate()
   const clinic = useAuthStore((state) => state.clinic)
-  const logout = useAuthStore((state) => state.logout)
 
-  const onLogout = () => {
-    logout()
+  const onLogout = async () => {
+    await logout()
     navigate('/login', { replace: true })
   }
 
@@ -73,7 +73,7 @@ function Brand() {
   )
 }
 
-function ClinicCard({ name, vet }: { name?: string; vet?: string }) {
+function ClinicCard({ name, vet }: { name?: string | null; vet?: string | null }) {
   if (!name && !vet) return null
   return (
     <div className="rounded-lg border border-ink-100 bg-ink-50 px-3 py-2.5">

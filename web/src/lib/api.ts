@@ -1,7 +1,7 @@
-import { getApiKey } from '../store/auth'
+import { auth } from './firebase'
 import type {
+  Clinic,
   ClinicCreate,
-  ClinicRegistered,
   Consultation,
   ConsultationCreate,
   Owner,
@@ -36,15 +36,15 @@ interface RequestOptions {
 }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { method = 'GET', body, auth = true } = options
+  const { method = 'GET', body, auth: requireAuth = true } = options
   const headers: Record<string, string> = {}
 
   if (body !== undefined) headers['Content-Type'] = 'application/json'
 
-  if (auth) {
-    const apiKey = getApiKey()
-    if (!apiKey) throw new ApiError(401, 'Falta la clave de acceso.')
-    headers['X-API-Key'] = apiKey
+  if (requireAuth) {
+    const token = await auth.currentUser?.getIdToken()
+    if (!token) throw new ApiError(401, 'Sesión no iniciada.')
+    headers['Authorization'] = `Bearer ${token}`
   }
 
   const response = await fetch(`${baseUrl}${path}`, {
@@ -76,8 +76,13 @@ async function readError(response: Response): Promise<string> {
   return `Error ${response.status}`
 }
 
-export function registerClinic(input: ClinicCreate): Promise<ClinicRegistered> {
-  return request<ClinicRegistered>('/clinics', { method: 'POST', body: input, auth: false })
+export async function getMyClinic(): Promise<Clinic | null> {
+  const clinic = await request<Clinic | null>('/me/clinic')
+  return clinic ?? null
+}
+
+export function createClinic(input: ClinicCreate): Promise<Clinic> {
+  return request<Clinic>('/clinics', { method: 'POST', body: input })
 }
 
 export const api = {

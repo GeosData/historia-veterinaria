@@ -8,6 +8,7 @@ class Settings(BaseSettings):
 
     database_url: str = ""
     allowed_origins: list[str] = ["*"]
+    firebase_project_id: str = ""
 
 
 @lru_cache

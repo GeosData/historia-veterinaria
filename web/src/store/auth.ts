@@ -1,45 +1,59 @@
+import type { User } from 'firebase/auth'
+import { onAuthStateChanged } from 'firebase/auth'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { registerClinic } from '../lib/api'
-import type { ClinicCreate } from '../types'
+import { auth } from '../lib/firebase'
+import { getMyClinic } from '../lib/api'
+import type { Clinic } from '../types'
 
-interface ClinicProfile {
-  id: string
-  name?: string
-  vet_name?: string
-  email?: string
-}
+type ClinicStatus = 'idle' | 'loading' | 'ready'
 
 interface AuthState {
-  apiKey: string | null
-  clinic: ClinicProfile | null
-  login: (apiKey: string) => void
-  register: (input: ClinicCreate) => Promise<void>
-  logout: () => void
+  user: User | null
+  uid: string | null
+  email: string | null
+  loading: boolean
+  clinic: Clinic | null
+  clinicStatus: ClinicStatus
+  fetchClinic: () => Promise<void>
+  setClinic: (clinic: Clinic) => void
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      apiKey: null,
-      clinic: null,
-      login: (apiKey) => set({ apiKey: apiKey.trim(), clinic: null }),
-      register: async (input) => {
-        const registered = await registerClinic(input)
-        set({
-          apiKey: registered.api_key,
-          clinic: {
-            id: registered.id,
-            name: input.name,
-            vet_name: input.vet_name,
-            email: input.email,
-          },
-        })
-      },
-      logout: () => set({ apiKey: null, clinic: null }),
-    }),
-    { name: 'vet-auth' },
-  ),
-)
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  uid: null,
+  email: null,
+  loading: true,
+  clinic: null,
+  clinicStatus: 'idle',
+  fetchClinic: async () => {
+    set({ clinicStatus: 'loading' })
+    try {
+      const clinic = await getMyClinic()
+      set({ clinic, clinicStatus: 'ready' })
+    } catch {
+      set({ clinic: null, clinicStatus: 'ready' })
+    }
+  },
+  setClinic: (clinic) => set({ clinic }),
+}))
 
-export const getApiKey = () => useAuthStore.getState().apiKey
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    useAuthStore.setState({
+      user,
+      uid: user.uid,
+      email: user.email,
+      loading: false,
+    })
+    void useAuthStore.getState().fetchClinic()
+  } else {
+    useAuthStore.setState({
+      user: null,
+      uid: null,
+      email: null,
+      loading: false,
+      clinic: null,
+      clinicStatus: 'idle',
+    })
+  }
+})

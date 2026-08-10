@@ -1,12 +1,14 @@
 export interface ClinicCreate {
   name: string
   vet_name: string
-  email: string
 }
 
-export interface ClinicRegistered {
+export interface Clinic {
   id: string
-  api_key: string
+  name: string
+  vet_name?: string | null
+  email: string
+  created_at: string
 }
 
 export interface OwnerCreate {
