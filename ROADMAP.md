@@ -10,9 +10,10 @@
 - [ ] `02-nombres` (subdominio corto + SEO on-page) · `03-alcance` · `04-decisiones` (stack).
 
 ## Fase 1 — Tool-imán: generador de historia clínica
-- [ ] Formulario → historia clínica en PDF, lista para imprimir/archivar. Client-side (cero fricción, sin cuenta).
-- [ ] SEO on-page para *"cómo hacer/llenar una historia clínica veterinaria"*.
-- [ ] Subdominio propio + medición de uso (molde de graduación Geosdata).
+- [x] Formulario → historia clínica en PDF (print-to-PDF), lista para imprimir/archivar. Client-side, sin cuenta.
+- [x] SEO on-page para *"cómo hacer/llenar una historia clínica veterinaria"*.
+- [x] Subdominio propio `historia-veterinaria.geosdata.com` (CF Pages + CNAME manual).
+- [ ] **Medición**: al ser client-side no pega a la API del motor → el contador Neon no la cuenta. Necesita CF Web Analytics (visitas) + evento "generó historia clínica" a un endpoint. Pendiente.
 
 ## Fase 2 — Contenido SEO (atrae al veterinario)
 - [ ] Artículos: "cómo llenar una historia clínica veterinaria", "cómo administrar una clínica veterinaria", "qué debe tener una historia clínica".
