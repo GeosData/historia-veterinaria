@@ -61,7 +61,10 @@ export function LoginPage() {
               veterinario.
             </p>
           </div>
-          <p className="text-sm text-brand-100/80">Un producto Geosdata</p>
+          <p className="text-sm text-brand-100/80">
+            Un producto de{" "}
+            <a href="https://geosdata.com" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-white">Geosdata</a>
+          </p>
         </div>
       </aside>
 
