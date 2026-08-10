@@ -1,0 +1,39 @@
+@import '@fontsource/schibsted-grotesk/500.css';
+@import '@fontsource/schibsted-grotesk/600.css';
+@import '@fontsource/schibsted-grotesk/700.css';
+@import '@fontsource/schibsted-grotesk/800.css';
+@import '@fontsource/hanken-grotesk/400.css';
+@import '@fontsource/hanken-grotesk/500.css';
+@import '@fontsource/hanken-grotesk/600.css';
+@import '@fontsource/hanken-grotesk/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ink-50 font-sans text-ink-800 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink-950;
+  }
+}
+
+@layer components {
+  .field-label {
+    @apply mb-1 block text-sm font-medium text-ink-700;
+  }
+
+  .field-input {
+    @apply w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-ink-900 shadow-sm outline-none transition placeholder:text-ink-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 disabled:cursor-not-allowed disabled:bg-ink-100;
+  }
+}
