@@ -8,9 +8,11 @@ import { Field, Select, TextInput } from '../components/Field'
 import { Modal } from '../components/Modal'
 import { api, ApiError } from '../lib/api'
 import { formatDate } from '../lib/format'
+import { useAuthStore } from '../store/auth'
 import type { Owner, PatientCreate, PatientListItem } from '../types'
 
 export function PatientsPage() {
+  const clinicId = useAuthStore((state) => state.activeClinicId)
   const [patients, setPatients] = useState<PatientListItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -18,10 +20,11 @@ export function PatientsPage() {
   const [modalOpen, setModalOpen] = useState(false)
 
   const load = async () => {
+    if (!clinicId) return
     setLoading(true)
     setError(null)
     try {
-      setPatients(await api.listPatients())
+      setPatients(await api.listPatients(clinicId))
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'No se pudieron cargar los pacientes.')
     } finally {
@@ -31,7 +34,7 @@ export function PatientsPage() {
 
   useEffect(() => {
     void load()
-  }, [])
+  }, [clinicId])
 
   const filtered = patients.filter((patient) => {
     const haystack = `${patient.name} ${patient.owner_name ?? ''} ${patient.species ?? ''}`.toLowerCase()
@@ -98,6 +101,7 @@ export function PatientsPage() {
 
       <NewPatientModal
         open={modalOpen}
+        clinicId={clinicId}
         onClose={() => setModalOpen(false)}
         onCreated={() => {
           setModalOpen(false)
@@ -119,6 +123,7 @@ function Meta({ label, value }: { label: string; value?: string | null }) {
 
 interface NewPatientModalProps {
   open: boolean
+  clinicId: string | null
   onClose: () => void
   onCreated: () => void
 }
@@ -132,7 +137,7 @@ const emptyPatient: PatientCreate = {
   color: '',
 }
 
-function NewPatientModal({ open, onClose, onCreated }: NewPatientModalProps) {
+function NewPatientModal({ open, clinicId, onClose, onCreated }: NewPatientModalProps) {
   const [owners, setOwners] = useState<Owner[]>([])
   const [ownerMode, setOwnerMode] = useState<'existing' | 'new'>('new')
   const [ownerId, setOwnerId] = useState('')
@@ -144,23 +149,24 @@ function NewPatientModal({ open, onClose, onCreated }: NewPatientModalProps) {
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    if (!open) return
+    if (!open || !clinicId) return
     setError(null)
     setPatient(emptyPatient)
     setWeight('')
     setNeutered(false)
     setNewOwner({ name: '', document: '', phone: '', address: '' })
     void api
-      .listOwners()
+      .listOwners(clinicId)
       .then((data) => {
         setOwners(data)
         setOwnerMode(data.length > 0 ? 'existing' : 'new')
       })
       .catch(() => setOwners([]))
-  }, [open])
+  }, [open, clinicId])
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    if (!clinicId) return
     setError(null)
     setSubmitting(true)
     try {
@@ -168,7 +174,7 @@ function NewPatientModal({ open, onClose, onCreated }: NewPatientModalProps) {
       if (ownerMode === 'existing') {
         resolvedOwnerId = ownerId || null
       } else if (newOwner.name.trim()) {
-        const created = await api.createOwner({
+        const created = await api.createOwner(clinicId, {
           name: newOwner.name.trim(),
           document: newOwner.document || null,
           phone: newOwner.phone || null,
@@ -177,7 +183,7 @@ function NewPatientModal({ open, onClose, onCreated }: NewPatientModalProps) {
         resolvedOwnerId = created.id
       }
 
-      await api.createPatient({
+      await api.createPatient(clinicId, {
         owner_id: resolvedOwnerId,
         name: patient.name.trim(),
         species: patient.species || null,

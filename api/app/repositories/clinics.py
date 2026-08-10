@@ -3,35 +3,47 @@ from typing import Any
 from app.db import get_conn
 
 
-def find_id_by_user_id(user_id: str) -> str | None:
+def list_for_user(user_id: str) -> list[dict[str, Any]]:
     with get_conn() as conn:
-        row = conn.execute(
-            "SELECT id FROM clinics WHERE user_id = %s",
+        rows = conn.execute(
+            """
+            SELECT id, name, email, created_at
+            FROM clinics
+            WHERE user_id = %s
+            ORDER BY created_at DESC
+            """,
             (user_id,),
-        ).fetchone()
-    if row is None:
-        return None
-    return str(row["id"])
+        ).fetchall()
+    return rows
 
 
-def find_by_user_id(user_id: str) -> dict[str, Any] | None:
+def find(clinic_id: str) -> dict[str, Any] | None:
     with get_conn() as conn:
         row = conn.execute(
-            "SELECT id, name, vet_name, email, created_at FROM clinics WHERE user_id = %s",
-            (user_id,),
+            "SELECT id, name, email, created_at FROM clinics WHERE id = %s",
+            (clinic_id,),
         ).fetchone()
     return row
 
 
-def insert(name: str, vet_name: str, email: str, user_id: str) -> dict[str, Any]:
+def belongs_to_user(clinic_id: str, user_id: str) -> bool:
+    with get_conn() as conn:
+        row = conn.execute(
+            "SELECT 1 FROM clinics WHERE id = %s AND user_id = %s",
+            (clinic_id, user_id),
+        ).fetchone()
+    return row is not None
+
+
+def insert(name: str, email: str, user_id: str) -> dict[str, Any]:
     with get_conn() as conn:
         row = conn.execute(
             """
-            INSERT INTO clinics (name, vet_name, email, user_id)
-            VALUES (%s, %s, %s, %s)
-            RETURNING id, name, vet_name, email, created_at
+            INSERT INTO clinics (name, email, user_id)
+            VALUES (%s, %s, %s)
+            RETURNING id, name, email, created_at
             """,
-            (name, vet_name, email, user_id),
+            (name, email, user_id),
         ).fetchone()
         conn.commit()
     return row

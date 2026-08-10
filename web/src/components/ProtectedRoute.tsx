@@ -12,11 +12,11 @@ export function ProtectedRoute() {
 }
 
 export function ClinicGate() {
-  const clinic = useAuthStore((state) => state.clinic)
-  const clinicStatus = useAuthStore((state) => state.clinicStatus)
+  const clinics = useAuthStore((state) => state.clinics)
+  const clinicsStatus = useAuthStore((state) => state.clinicsStatus)
 
-  if (clinicStatus !== 'ready') return <FullScreenLoader />
-  if (!clinic) return <Navigate to="/onboarding" replace />
+  if (clinicsStatus !== 'ready') return <FullScreenLoader />
+  if (clinics.length === 0) return <Navigate to="/onboarding" replace />
   return <Outlet />
 }
 

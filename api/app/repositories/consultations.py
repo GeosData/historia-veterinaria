@@ -9,6 +9,7 @@ from app.db import get_conn
 def insert(
     clinic_id: str,
     patient_id: str,
+    vet_id: str | None,
     consult_date: date | None,
     reason: str | None,
     exam: dict[str, Any] | None,
@@ -21,18 +22,19 @@ def insert(
         row = conn.execute(
             """
             INSERT INTO consultations (
-                clinic_id, patient_id, date, reason, exam,
+                clinic_id, patient_id, vet_id, date, reason, exam,
                 dx_presumptive, dx_definitive, treatment, next_visit
             )
             VALUES (
-                %s, %s, COALESCE(%s, CURRENT_DATE), %s, %s, %s, %s, %s, %s
+                %s, %s, %s, COALESCE(%s, CURRENT_DATE), %s, %s, %s, %s, %s, %s
             )
-            RETURNING id, clinic_id, patient_id, date, reason, exam,
+            RETURNING id, clinic_id, patient_id, vet_id, date, reason, exam,
                       dx_presumptive, dx_definitive, treatment, next_visit, created_at
             """,
             (
                 clinic_id,
                 patient_id,
+                vet_id,
                 consult_date,
                 reason,
                 Json(exam) if exam is not None else None,
@@ -50,7 +52,7 @@ def list_for_patient(clinic_id: str, patient_id: str) -> list[dict[str, Any]]:
     with get_conn() as conn:
         rows = conn.execute(
             """
-            SELECT id, clinic_id, patient_id, date, reason, exam,
+            SELECT id, clinic_id, patient_id, vet_id, date, reason, exam,
                    dx_presumptive, dx_definitive, treatment, next_visit, created_at
             FROM consultations
             WHERE clinic_id = %s AND patient_id = %s

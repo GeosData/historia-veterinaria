@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status
 
-from app.middleware.auth import require_clinic
+from app.middleware.auth import require_clinic_access
 from app.repositories import vaccines
 from app.schemas.models import Vaccine, VaccineCreate
 from app.services import patients as patients_service
@@ -9,14 +9,14 @@ router = APIRouter(tags=["vaccines"])
 
 
 @router.post(
-    "/patients/{patient_id}/vaccines",
+    "/clinics/{clinic_id}/patients/{patient_id}/vaccines",
     response_model=Vaccine,
     status_code=status.HTTP_201_CREATED,
 )
 def create_vaccine(
     patient_id: str,
     payload: VaccineCreate,
-    clinic_id: str = Depends(require_clinic),
+    clinic_id: str = Depends(require_clinic_access),
 ) -> Vaccine:
     patients_service.ensure_patient(clinic_id, patient_id)
     row = vaccines.insert(

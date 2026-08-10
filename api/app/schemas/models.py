@@ -9,15 +9,38 @@ DateValue = date
 
 class ClinicCreate(BaseModel):
     name: str
-    vet_name: str
 
 
 class Clinic(BaseModel):
     id: str
     name: str
-    vet_name: str | None = None
     email: str
     created_at: datetime
+
+
+class VetCreate(BaseModel):
+    name: str
+    license: str | None = None
+    email: str | None = None
+
+
+class VetUpdate(BaseModel):
+    name: str | None = None
+    license: str | None = None
+    email: str | None = None
+
+
+class Vet(BaseModel):
+    id: str
+    user_id: str
+    name: str
+    license: str | None = None
+    email: str | None = None
+    created_at: datetime
+
+
+class ClinicVetAssociate(BaseModel):
+    vet_id: str
 
 
 class OwnerCreate(BaseModel):
@@ -76,12 +99,14 @@ class ConsultationCreate(BaseModel):
     dx_definitive: str | None = None
     treatment: str | None = None
     next_visit: DateValue | None = None
+    vet_id: str | None = None
 
 
 class Consultation(BaseModel):
     id: str
     clinic_id: str
     patient_id: str
+    vet_id: str | None = None
     date: DateValue | None = None
     reason: str | None = None
     exam: dict[str, Any] | None = None

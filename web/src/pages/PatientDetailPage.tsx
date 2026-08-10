@@ -4,19 +4,22 @@ import { Link, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Card, Section } from '../components/Card'
 import { Badge, EmptyState, ErrorNote, Spinner } from '../components/Feedback'
-import { Field, TextArea, TextInput } from '../components/Field'
+import { Field, Select, TextArea, TextInput } from '../components/Field'
 import { Modal } from '../components/Modal'
 import { api, ApiError } from '../lib/api'
 import { daysUntil, dueLabel, examToText, formatDate, today } from '../lib/format'
+import { useAuthStore } from '../store/auth'
 import type {
   Consultation,
   ConsultationCreate,
   PatientHistory,
   VaccineCreate,
+  Vet,
 } from '../types'
 
 export function PatientDetailPage() {
   const { id = '' } = useParams()
+  const clinicId = useAuthStore((state) => state.activeClinicId)
   const [history, setHistory] = useState<PatientHistory | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -24,10 +27,11 @@ export function PatientDetailPage() {
   const [vaccineOpen, setVaccineOpen] = useState(false)
 
   const load = async () => {
+    if (!clinicId) return
     setLoading(true)
     setError(null)
     try {
-      setHistory(await api.getPatient(id))
+      setHistory(await api.getPatient(clinicId, id))
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'No se pudo cargar la ficha.')
     } finally {
@@ -37,7 +41,7 @@ export function PatientDetailPage() {
 
   useEffect(() => {
     void load()
-  }, [id])
+  }, [id, clinicId])
 
   const consultations = useMemo(() => {
     if (!history) return []
@@ -131,6 +135,7 @@ export function PatientDetailPage() {
 
       <ConsultationModal
         open={consultOpen}
+        clinicId={clinicId}
         patientId={id}
         onClose={() => setConsultOpen(false)}
         onSaved={() => {
@@ -140,6 +145,7 @@ export function PatientDetailPage() {
       />
       <VaccineModal
         open={vaccineOpen}
+        clinicId={clinicId}
         patientId={id}
         onClose={() => setVaccineOpen(false)}
         onSaved={() => {
@@ -195,41 +201,46 @@ function Meta({ label, value }: { label: string; value?: string | null }) {
 
 interface ConsultationModalProps {
   open: boolean
+  clinicId: string | null
   patientId: string
   onClose: () => void
   onSaved: () => void
 }
 
-function ConsultationModal({ open, patientId, onClose, onSaved }: ConsultationModalProps) {
-  const [form, setForm] = useState({
-    date: today(),
-    reason: '',
-    exam: '',
-    dx_presumptive: '',
-    dx_definitive: '',
-    treatment: '',
-    next_visit: '',
-  })
+const emptyConsultation = {
+  date: today(),
+  reason: '',
+  exam: '',
+  dx_presumptive: '',
+  dx_definitive: '',
+  treatment: '',
+  next_visit: '',
+  vet_id: '',
+}
+
+function ConsultationModal({ open, clinicId, patientId, onClose, onSaved }: ConsultationModalProps) {
+  const [form, setForm] = useState(emptyConsultation)
+  const [vets, setVets] = useState<Vet[]>([])
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    if (open) {
-      setError(null)
-      setForm({
-        date: today(),
-        reason: '',
-        exam: '',
-        dx_presumptive: '',
-        dx_definitive: '',
-        treatment: '',
-        next_visit: '',
-      })
+    if (!open) return
+    setError(null)
+    setForm({ ...emptyConsultation, date: today() })
+    if (!clinicId) {
+      setVets([])
+      return
     }
-  }, [open])
+    void api
+      .listClinicVets(clinicId)
+      .then(setVets)
+      .catch(() => setVets([]))
+  }, [open, clinicId])
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    if (!clinicId) return
     setError(null)
     setSubmitting(true)
     try {
@@ -241,8 +252,9 @@ function ConsultationModal({ open, patientId, onClose, onSaved }: ConsultationMo
         dx_definitive: form.dx_definitive || null,
         treatment: form.treatment || null,
         next_visit: form.next_visit || null,
+        vet_id: form.vet_id || null,
       }
-      await api.createConsultation(patientId, payload)
+      await api.createConsultation(clinicId, patientId, payload)
       onSaved()
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'No se pudo guardar la consulta.')
@@ -271,6 +283,24 @@ function ConsultationModal({ open, patientId, onClose, onSaved }: ConsultationMo
             />
           </Field>
         </div>
+        <Field
+          label="Médico que atendió"
+          hint={vets.length === 0 ? 'No hay médicos asociados a esta clínica.' : undefined}
+        >
+          <Select
+            value={form.vet_id}
+            onChange={(e) => setForm({ ...form, vet_id: e.target.value })}
+            disabled={vets.length === 0}
+          >
+            <option value="">Sin especificar</option>
+            {vets.map((vet) => (
+              <option key={vet.id} value={vet.id}>
+                {vet.name}
+                {vet.license ? ` · ${vet.license}` : ''}
+              </option>
+            ))}
+          </Select>
+        </Field>
         <Field label="Motivo de consulta">
           <TextInput
             value={form.reason}
@@ -320,12 +350,13 @@ function ConsultationModal({ open, patientId, onClose, onSaved }: ConsultationMo
 
 interface VaccineModalProps {
   open: boolean
+  clinicId: string | null
   patientId: string
   onClose: () => void
   onSaved: () => void
 }
 
-function VaccineModal({ open, patientId, onClose, onSaved }: VaccineModalProps) {
+function VaccineModal({ open, clinicId, patientId, onClose, onSaved }: VaccineModalProps) {
   const [form, setForm] = useState({ name: '', applied_at: today(), next_due: '' })
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -339,6 +370,7 @@ function VaccineModal({ open, patientId, onClose, onSaved }: VaccineModalProps) 
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    if (!clinicId) return
     setError(null)
     setSubmitting(true)
     try {
@@ -347,7 +379,7 @@ function VaccineModal({ open, patientId, onClose, onSaved }: VaccineModalProps) 
         applied_at: form.applied_at || null,
         next_due: form.next_due || null,
       }
-      await api.createVaccine(patientId, payload)
+      await api.createVaccine(clinicId, patientId, payload)
       onSaved()
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'No se pudo registrar la vacuna.')

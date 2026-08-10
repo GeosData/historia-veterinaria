@@ -2,39 +2,68 @@ import type { User } from 'firebase/auth'
 import { onAuthStateChanged } from 'firebase/auth'
 import { create } from 'zustand'
 import { auth } from '../lib/firebase'
-import { getMyClinic } from '../lib/api'
+import { listClinics } from '../lib/api'
 import type { Clinic } from '../types'
 
-type ClinicStatus = 'idle' | 'loading' | 'ready'
+type ClinicsStatus = 'idle' | 'loading' | 'ready'
+
+const ACTIVE_CLINIC_KEY = 'active_clinic_id'
+
+function readActiveClinicId(): string | null {
+  try {
+    return localStorage.getItem(ACTIVE_CLINIC_KEY)
+  } catch {
+    return null
+  }
+}
+
+function persistActiveClinicId(id: string | null) {
+  try {
+    if (id) localStorage.setItem(ACTIVE_CLINIC_KEY, id)
+    else localStorage.removeItem(ACTIVE_CLINIC_KEY)
+  } catch {
+    return
+  }
+}
 
 interface AuthState {
   user: User | null
   uid: string | null
   email: string | null
   loading: boolean
-  clinic: Clinic | null
-  clinicStatus: ClinicStatus
-  fetchClinic: () => Promise<void>
-  setClinic: (clinic: Clinic) => void
+  clinics: Clinic[]
+  activeClinicId: string | null
+  clinicsStatus: ClinicsStatus
+  setActiveClinic: (id: string) => void
+  refreshClinics: () => Promise<void>
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   uid: null,
   email: null,
   loading: true,
-  clinic: null,
-  clinicStatus: 'idle',
-  fetchClinic: async () => {
-    set({ clinicStatus: 'loading' })
+  clinics: [],
+  activeClinicId: readActiveClinicId(),
+  clinicsStatus: 'idle',
+  setActiveClinic: (id) => {
+    persistActiveClinicId(id)
+    set({ activeClinicId: id })
+  },
+  refreshClinics: async () => {
+    set({ clinicsStatus: 'loading' })
     try {
-      const clinic = await getMyClinic()
-      set({ clinic, clinicStatus: 'ready' })
+      const clinics = await listClinics()
+      const preferred = [get().activeClinicId, readActiveClinicId()].find(
+        (id) => id != null && clinics.some((clinic) => clinic.id === id),
+      )
+      const activeClinicId = preferred ?? clinics[0]?.id ?? null
+      persistActiveClinicId(activeClinicId)
+      set({ clinics, activeClinicId, clinicsStatus: 'ready' })
     } catch {
-      set({ clinic: null, clinicStatus: 'ready' })
+      set({ clinics: [], clinicsStatus: 'ready' })
     }
   },
-  setClinic: (clinic) => set({ clinic }),
 }))
 
 onAuthStateChanged(auth, (user) => {
@@ -45,15 +74,17 @@ onAuthStateChanged(auth, (user) => {
       email: user.email,
       loading: false,
     })
-    void useAuthStore.getState().fetchClinic()
+    void useAuthStore.getState().refreshClinics()
   } else {
+    persistActiveClinicId(null)
     useAuthStore.setState({
       user: null,
       uid: null,
       email: null,
       loading: false,
-      clinic: null,
-      clinicStatus: 'idle',
+      clinics: [],
+      activeClinicId: null,
+      clinicsStatus: 'idle',
     })
   }
 })

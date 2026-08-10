@@ -4,18 +4,22 @@ import { Card } from '../components/Card'
 import { Badge, EmptyState, ErrorNote, Spinner } from '../components/Feedback'
 import { api, ApiError } from '../lib/api'
 import { daysUntil, dueLabel, formatDate } from '../lib/format'
+import { useAuthStore } from '../store/auth'
 import type { Reminder } from '../types'
 
 export function RemindersPage() {
+  const clinicId = useAuthStore((state) => state.activeClinicId)
   const [reminders, setReminders] = useState<Reminder[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!clinicId) return
     let active = true
     setLoading(true)
+    setError(null)
     api
-      .listReminders()
+      .listReminders(clinicId)
       .then((data) => {
         if (active) setReminders(data)
       })
@@ -30,7 +34,7 @@ export function RemindersPage() {
     return () => {
       active = false
     }
-  }, [])
+  }, [clinicId])
 
   const sorted = useMemo(
     () =>

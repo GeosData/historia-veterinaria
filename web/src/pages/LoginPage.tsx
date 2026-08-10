@@ -8,21 +8,21 @@ import { useAuthStore } from '../store/auth'
 
 export function LoginPage() {
   const user = useAuthStore((state) => state.user)
-  const clinic = useAuthStore((state) => state.clinic)
-  const clinicStatus = useAuthStore((state) => state.clinicStatus)
+  const clinics = useAuthStore((state) => state.clinics)
+  const clinicsStatus = useAuthStore((state) => state.clinicsStatus)
 
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
   if (user) {
-    if (clinicStatus !== 'ready') {
+    if (clinicsStatus !== 'ready') {
       return (
         <div className="flex min-h-screen items-center justify-center bg-ink-50">
           <Spinner />
         </div>
       )
     }
-    return <Navigate to={clinic ? '/pacientes' : '/onboarding'} replace />
+    return <Navigate to={clinics.length > 0 ? '/pacientes' : '/onboarding'} replace />
   }
 
   const onGoogle = async () => {

@@ -1,13 +1,30 @@
 export interface ClinicCreate {
   name: string
-  vet_name: string
 }
 
 export interface Clinic {
   id: string
   name: string
-  vet_name?: string | null
-  email: string
+  created_at: string
+}
+
+export interface VetCreate {
+  name: string
+  license?: string | null
+  email?: string | null
+}
+
+export interface VetUpdate {
+  name?: string
+  license?: string | null
+  email?: string | null
+}
+
+export interface Vet {
+  id: string
+  name: string
+  license?: string | null
+  email?: string | null
   created_at: string
 }
 
@@ -69,6 +86,7 @@ export interface ConsultationCreate {
   dx_definitive?: string | null
   treatment?: string | null
   next_visit?: string | null
+  vet_id?: string | null
 }
 
 export interface Consultation {
@@ -82,6 +100,7 @@ export interface Consultation {
   dx_definitive?: string | null
   treatment?: string | null
   next_visit?: string | null
+  vet_id?: string | null
   created_at: string
 }
 

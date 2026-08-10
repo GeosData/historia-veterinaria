@@ -3,14 +3,16 @@ import { logout } from '../lib/firebase'
 import { useAuthStore } from '../store/auth'
 import { Button } from './Button'
 
+const NEW_CLINIC_VALUE = '__new__'
+
 const navItems = [
   { to: '/pacientes', label: 'Pacientes', icon: PawIcon },
+  { to: '/medicos', label: 'Médicos', icon: StethoscopeIcon },
   { to: '/recordatorios', label: 'Recordatorios', icon: BellIcon },
 ]
 
 export function Layout() {
   const navigate = useNavigate()
-  const clinic = useAuthStore((state) => state.clinic)
 
   const onLogout = async () => {
     await logout()
@@ -41,14 +43,17 @@ export function Layout() {
             ))}
           </nav>
           <div className="hidden lg:mt-auto lg:block">
-            <ClinicCard name={clinic?.name} vet={clinic?.vet_name} />
+            <ClinicSwitcher />
             <Button variant="ghost" size="sm" className="mt-2 w-full" onClick={onLogout}>
               Salir
             </Button>
           </div>
-          <Button variant="ghost" size="sm" className="lg:hidden" onClick={onLogout}>
-            Salir
-          </Button>
+          <div className="flex items-center gap-2 lg:hidden">
+            <ClinicSwitcher />
+            <Button variant="ghost" size="sm" onClick={onLogout}>
+              Salir
+            </Button>
+          </div>
         </div>
       </aside>
 
@@ -56,6 +61,43 @@ export function Layout() {
         <Outlet />
       </main>
     </div>
+  )
+}
+
+function ClinicSwitcher() {
+  const navigate = useNavigate()
+  const clinics = useAuthStore((state) => state.clinics)
+  const activeClinicId = useAuthStore((state) => state.activeClinicId)
+  const setActiveClinic = useAuthStore((state) => state.setActiveClinic)
+
+  const onChange = (value: string) => {
+    if (value === NEW_CLINIC_VALUE) {
+      navigate('/onboarding')
+      return
+    }
+    if (value === activeClinicId) return
+    setActiveClinic(value)
+    navigate('/pacientes')
+  }
+
+  return (
+    <label className="block">
+      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-ink-400">
+        Clínica activa
+      </span>
+      <select
+        value={activeClinicId ?? ''}
+        onChange={(e) => onChange(e.target.value)}
+        className="field-input"
+      >
+        {clinics.map((clinic) => (
+          <option key={clinic.id} value={clinic.id}>
+            {clinic.name}
+          </option>
+        ))}
+        <option value={NEW_CLINIC_VALUE}>+ Nueva clínica</option>
+      </select>
+    </label>
   )
 }
 
@@ -73,16 +115,6 @@ function Brand() {
   )
 }
 
-function ClinicCard({ name, vet }: { name?: string | null; vet?: string | null }) {
-  if (!name && !vet) return null
-  return (
-    <div className="rounded-lg border border-ink-100 bg-ink-50 px-3 py-2.5">
-      {name && <p className="truncate text-sm font-semibold text-ink-800">{name}</p>}
-      {vet && <p className="truncate text-xs text-ink-500">{vet}</p>}
-    </div>
-  )
-}
-
 function PawIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
@@ -91,6 +123,25 @@ function PawIcon() {
       <circle cx="9.5" cy="6" r="2" />
       <circle cx="14.5" cy="6" r="2" />
       <path d="M12 12.5c2.6 0 4.7 1.9 4.7 4.2 0 1.5-1.2 2.3-2.7 2.3-.9 0-1.4-.4-2-.4s-1.1.4-2 .4c-1.5 0-2.7-.8-2.7-2.3 0-2.3 2.1-4.2 4.7-4.2Z" />
+    </svg>
+  )
+}
+
+function StethoscopeIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 3v5a4 4 0 0 0 8 0V3" />
+      <path d="M9 15a5 5 0 0 0 5 5 4 4 0 0 0 4-4v-2" />
+      <circle cx="18" cy="10" r="2" />
     </svg>
   )
 }

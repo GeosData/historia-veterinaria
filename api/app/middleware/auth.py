@@ -21,8 +21,13 @@ def require_user(authorization: str | None = Header(default=None)) -> dict[str, 
     return {"uid": decoded["uid"], "email": decoded.get("email")}
 
 
-def require_clinic(user: dict[str, str | None] = Depends(require_user)) -> str:
-    clinic_id = clinics.find_id_by_user_id(str(user["uid"]))
-    if clinic_id is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="no_clinic")
+def require_clinic_access(
+    clinic_id: str,
+    user: dict[str, str | None] = Depends(require_user),
+) -> str:
+    if not clinics.belongs_to_user(clinic_id, str(user["uid"])):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="clinic_not_found",
+        )
     return clinic_id

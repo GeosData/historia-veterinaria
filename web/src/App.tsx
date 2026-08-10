@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { ClinicGate, ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
+import { MedicosPage } from './pages/MedicosPage'
 import { OnboardingPage } from './pages/OnboardingPage'
 import { PatientDetailPage } from './pages/PatientDetailPage'
 import { PatientsPage } from './pages/PatientsPage'
@@ -18,6 +19,7 @@ export function App() {
             <Route element={<Layout />}>
               <Route path="/pacientes" element={<PatientsPage />} />
               <Route path="/pacientes/:id" element={<PatientDetailPage />} />
+              <Route path="/medicos" element={<MedicosPage />} />
               <Route path="/recordatorios" element={<RemindersPage />} />
             </Route>
           </Route>

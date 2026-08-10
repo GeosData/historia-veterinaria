@@ -13,6 +13,9 @@ import type {
   Reminder,
   Vaccine,
   VaccineCreate,
+  Vet,
+  VetCreate,
+  VetUpdate,
 } from '../types'
 
 const baseUrl = (
@@ -76,9 +79,12 @@ async function readError(response: Response): Promise<string> {
   return `Error ${response.status}`
 }
 
-export async function getMyClinic(): Promise<Clinic | null> {
-  const clinic = await request<Clinic | null>('/me/clinic')
-  return clinic ?? null
+export function listClinics(): Promise<Clinic[]> {
+  return request<Clinic[]>('/clinics')
+}
+
+export function getClinic(clinicId: string): Promise<Clinic> {
+  return request<Clinic>(`/clinics/${clinicId}`)
 }
 
 export function createClinic(input: ClinicCreate): Promise<Clinic> {
@@ -86,22 +92,39 @@ export function createClinic(input: ClinicCreate): Promise<Clinic> {
 }
 
 export const api = {
-  listOwners: () => request<Owner[]>('/owners'),
-  createOwner: (input: OwnerCreate) =>
-    request<Owner>('/owners', { method: 'POST', body: input }),
+  listVets: () => request<Vet[]>('/vets'),
+  createVet: (input: VetCreate) => request<Vet>('/vets', { method: 'POST', body: input }),
+  updateVet: (vetId: string, input: VetUpdate) =>
+    request<Vet>(`/vets/${vetId}`, { method: 'PATCH', body: input }),
+  deleteVet: (vetId: string) => request<void>(`/vets/${vetId}`, { method: 'DELETE' }),
 
-  listPatients: () => request<PatientListItem[]>('/patients'),
-  createPatient: (input: PatientCreate) =>
-    request<Patient>('/patients', { method: 'POST', body: input }),
-  getPatient: (id: string) => request<PatientHistory>(`/patients/${id}`),
+  listClinicVets: (clinicId: string) => request<Vet[]>(`/clinics/${clinicId}/vets`),
+  addClinicVet: (clinicId: string, vetId: string) =>
+    request<Vet>(`/clinics/${clinicId}/vets`, { method: 'POST', body: { vet_id: vetId } }),
+  removeClinicVet: (clinicId: string, vetId: string) =>
+    request<void>(`/clinics/${clinicId}/vets/${vetId}`, { method: 'DELETE' }),
 
-  createConsultation: (patientId: string, input: ConsultationCreate) =>
-    request<Consultation>(`/patients/${patientId}/consultations`, {
+  listOwners: (clinicId: string) => request<Owner[]>(`/clinics/${clinicId}/owners`),
+  createOwner: (clinicId: string, input: OwnerCreate) =>
+    request<Owner>(`/clinics/${clinicId}/owners`, { method: 'POST', body: input }),
+
+  listPatients: (clinicId: string) =>
+    request<PatientListItem[]>(`/clinics/${clinicId}/patients`),
+  createPatient: (clinicId: string, input: PatientCreate) =>
+    request<Patient>(`/clinics/${clinicId}/patients`, { method: 'POST', body: input }),
+  getPatient: (clinicId: string, patientId: string) =>
+    request<PatientHistory>(`/clinics/${clinicId}/patients/${patientId}`),
+
+  createConsultation: (clinicId: string, patientId: string, input: ConsultationCreate) =>
+    request<Consultation>(`/clinics/${clinicId}/patients/${patientId}/consultations`, {
       method: 'POST',
       body: input,
     }),
-  createVaccine: (patientId: string, input: VaccineCreate) =>
-    request<Vaccine>(`/patients/${patientId}/vaccines`, { method: 'POST', body: input }),
+  createVaccine: (clinicId: string, patientId: string, input: VaccineCreate) =>
+    request<Vaccine>(`/clinics/${clinicId}/patients/${patientId}/vaccines`, {
+      method: 'POST',
+      body: input,
+    }),
 
-  listReminders: () => request<Reminder[]>('/reminders'),
+  listReminders: (clinicId: string) => request<Reminder[]>(`/clinics/${clinicId}/reminders`),
 }
