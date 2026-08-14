@@ -1,0 +1,76 @@
+---
+import Base from "../layouts/Base.astro";
+
+const campos = [
+  { h: "Especie y raza", p: "Perro, gato u otra especie, y la raza. Orienta predisposiciones (razas braquicéfalas, displasias, etc.)." },
+  { h: "Sexo y estado reproductivo", p: "Macho o hembra, entero o esterilizado/castrado. Cambia riesgos y diagnósticos diferenciales." },
+  { h: "Edad", p: "Fecha de nacimiento o edad aproximada. Enfermedades pediátricas, del adulto y geriátricas difieren." },
+  { h: "Capa, color y señas", p: "Color del pelaje y señas particulares (manchas, cicatrices). Ayudan a identificar al animal sin lugar a error." },
+  { h: "Peso", p: "Base para dosificar medicamentos y para seguir la condición corporal en el tiempo." },
+  { h: "Microchip", p: "Número de identificación electrónica, si lo tiene. Es la identificación única e inequívoca." },
+];
+---
+
+<Base
+  title="¿Qué es la reseña en la historia clínica veterinaria? (campos)"
+  description="Qué es la reseña del paciente en la historia clínica veterinaria y qué datos incluye: especie, raza, sexo, edad, capa, peso y microchip. Con generador gratis."
+  path="/resena-historia-clinica-veterinaria"
+>
+  <article class="wrap post">
+    <p class="eyebrow">Concepto</p>
+    <h1>Qué es la reseña en la historia clínica veterinaria</h1>
+    <p class="lede muted">
+      La reseña es la primera parte de la historia clínica: el conjunto de datos que identifican
+      al paciente de forma única. No es un trámite — orienta el diagnóstico y evita confundir animales.
+    </p>
+
+    <h2>Los datos de la reseña</h2>
+    <ol class="steps">
+      {campos.map((c, i) => (
+        <li>
+          <span class="steps__n">{i + 1}</span>
+          <div>
+            <h3>{c.h}</h3>
+            <p class="muted">{c.p}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <h2>Por qué importa</h2>
+    <p class="muted">
+      Dos pacientes con el mismo nombre pero distinta reseña son animales distintos. Además, la reseña
+      orienta el razonamiento clínico: la edad, la raza y el estado reproductivo cambian las enfermedades
+      probables. Por eso va de primera, antes de la anamnesis y el examen físico.
+    </p>
+
+    <div class="post__cta card">
+      <div>
+        <strong>La reseña ya viene en el generador</strong>
+        <p class="muted">Todos estos campos están en el formato de historia clínica, listos para llenar.</p>
+      </div>
+      <a class="btn btn-primary" href="/generador-historia-clinica-veterinaria">Abrir el generador</a>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post { padding: 3rem 1.25rem 0; max-width: 46rem; }
+  .post .lede { font-size: 1.2rem; margin-bottom: 2rem; }
+  .post__cta {
+    display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+    background: var(--pine-50); border-color: #d5e4dc; margin: 2rem 0;
+  }
+  .post__cta p { margin: 0.2rem 0 0; }
+  .steps { list-style: none; padding: 0; margin: 2rem 0; display: grid; gap: 1.5rem; }
+  .steps li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+  .steps__n {
+    font-family: var(--font-display); font-weight: 700; color: var(--pine-500);
+    background: var(--pine-50); width: 2.2rem; height: 2.2rem; border-radius: 999px;
+    display: grid; place-items: center; font-size: 1rem;
+  }
+  .steps h3 { margin-bottom: 0.25rem; }
+  @media (max-width: 640px) {
+    .post__cta { flex-direction: column; align-items: flex-start; }
+  }
+</style>

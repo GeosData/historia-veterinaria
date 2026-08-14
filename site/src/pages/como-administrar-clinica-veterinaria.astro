@@ -1,0 +1,74 @@
+---
+import Base from "../layouts/Base.astro";
+
+const puntos = [
+  { h: "Ordena las tarifas", p: "COMVEZCOL publicó tarifas sugeridas (Acuerdo 2340 de 2024). Úsalas de referencia, ajusta a tu ciudad y a tus costos reales, y ten una lista de precios visible. Cobrar 'a ojo' te hace perder plata." },
+  { h: "Historia clínica al día", p: "Una historia ordenada por paciente te deja retomar el caso en segundos, justifica lo que cobras y te protege legalmente. Es la base de todo lo demás." },
+  { h: "Agenda y no-shows", p: "Confirma citas el día anterior. Los espacios vacíos son ingreso perdido que no vuelve." },
+  { h: "Revacunación = ingreso recurrente", p: "El recordatorio de refuerzo trae de vuelta al paciente en el momento justo. Es el ingreso más predecible de una clínica pequeña, y el más fácil de dejar escapar sin un sistema." },
+  { h: "Separa lo clínico de lo administrativo", p: "Cobros, inventario y agenda no deberían vivir en tu cabeza ni en un cuaderno. Digitalizarlos libera tiempo para atender." },
+];
+---
+
+<Base
+  title="Cómo administrar y cobrar en una clínica veterinaria pequeña"
+  description="Guía práctica para administrar una clínica veterinaria pequeña: tarifas sugeridas COMVEZCOL, historia clínica, agenda, y la revacunación como ingreso recurrente."
+  path="/como-administrar-clinica-veterinaria"
+>
+  <article class="wrap post">
+    <p class="eyebrow">Guía de negocio</p>
+    <h1>Cómo administrar y cobrar una clínica veterinaria pequeña</h1>
+    <p class="lede muted">
+      Atender bien no alcanza si la plata se escapa por la administración. Estos son los puntos que
+      más mueven la aguja en una clínica de barrio — sin comprar un ERP corporativo.
+    </p>
+
+    <ol class="steps">
+      {puntos.map((c, i) => (
+        <li>
+          <span class="steps__n">{i + 1}</span>
+          <div>
+            <h3>{c.h}</h3>
+            <p class="muted">{c.p}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <h2>Empieza por lo diario, no por lo grande</h2>
+    <p class="muted">
+      No necesitas digitalizar todo de golpe. Arranca por lo que haces cada día —la historia clínica—
+      y de ahí crece a la agenda y a los recordatorios. Cada paso ordena un poco más el negocio sin
+      frenar la consulta.
+    </p>
+
+    <div class="post__cta card">
+      <div>
+        <strong>Ordena la historia y los recordatorios</strong>
+        <p class="muted">La app guarda el historial por paciente y te avisa cuándo toca revacunar.</p>
+      </div>
+      <a class="btn btn-primary" href="/app">Conocer la app</a>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post { padding: 3rem 1.25rem 0; max-width: 46rem; }
+  .post .lede { font-size: 1.2rem; margin-bottom: 2rem; }
+  .post__cta {
+    display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+    background: var(--pine-50); border-color: #d5e4dc; margin: 2rem 0;
+  }
+  .post__cta p { margin: 0.2rem 0 0; }
+  .steps { list-style: none; padding: 0; margin: 2rem 0; display: grid; gap: 1.5rem; }
+  .steps li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+  .steps__n {
+    font-family: var(--font-display); font-weight: 700; color: var(--pine-500);
+    background: var(--pine-50); width: 2.2rem; height: 2.2rem; border-radius: 999px;
+    display: grid; place-items: center; font-size: 1rem;
+  }
+  .steps h3 { margin-bottom: 0.25rem; }
+  @media (max-width: 640px) {
+    .post__cta { flex-direction: column; align-items: flex-start; }
+  }
+</style>

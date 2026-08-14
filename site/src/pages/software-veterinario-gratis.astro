@@ -1,0 +1,80 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title="Software veterinario gratis: qué opciones reales hay (2026)"
+  description="Qué software veterinario gratis existe de verdad para una clínica pequeña, cuándo vale la pena pagar una suite, y herramientas gratis para historia clínica, consentimiento y vacunas."
+  path="/software-veterinario-gratis"
+>
+  <article class="wrap post">
+    <p class="eyebrow">Comparativa honesta</p>
+    <h1>Software veterinario gratis: qué hay de verdad</h1>
+    <p class="lede muted">
+      Buscas "software veterinario gratis" y encuentras suites que en realidad son de pago con prueba.
+      Aquí va la versión honesta: qué es gratis de verdad, y cuándo sí conviene pagar.
+    </p>
+
+    <h2>Las suites completas (de pago)</h2>
+    <p class="muted">
+      Okvet, GVET, Vetesoft, Vetlogy y similares hacen todo: agenda, historia clínica, inventario,
+      facturación. Están bien si necesitas gestionar una clínica mediana o grande. Pero son de pago, y
+      para un consultorio de una a dos personas suelen ser caras y con más funciones de las que usarás.
+      Ofrecen prueba gratis, no plan gratis real.
+    </p>
+
+    <h2>Lo que sí es gratis (y suele bastar al arrancar)</h2>
+    <p class="muted">
+      Si tu dolor es dejar de escribir a mano y ordenar lo básico, no necesitas una suite todavía.
+      Estas herramientas son gratis y sin registro:
+    </p>
+    <ul class="tools">
+      <li>
+        <a href="/generador-historia-clinica-veterinaria">Generador de historia clínica</a>
+        <span class="muted">— llena y descarga el formato editable.</span>
+      </li>
+      <li>
+        <a href="/generador-consentimiento-informado-veterinario">Generador de consentimiento informado</a>
+        <span class="muted">— el formato legal por procedimiento.</span>
+      </li>
+      <li>
+        <a href="/generador-carnet-de-vacunas">Generador de carnet de vacunas</a>
+        <span class="muted">— el carnet con historial y próxima dosis.</span>
+      </li>
+    </ul>
+
+    <h2>¿Cuándo pasar a algo con cuenta?</h2>
+    <p class="muted">
+      Cuando ya no te alcanza con generar documentos sueltos y necesitas <strong>guardar el historial
+      por paciente</strong>, ver consultas anteriores y recibir el recordatorio de revacunación. Ahí
+      entra la app: empieza simple, guarda tus datos, y crece contigo sin el peso de una suite corporativa.
+    </p>
+
+    <div class="post__cta card">
+      <div>
+        <strong>Empieza gratis, sin instalar nada</strong>
+        <p class="muted">Genera tu primera historia clínica ahora; la cuenta llega cuando la necesites.</p>
+      </div>
+      <a class="btn btn-primary" href="/generador-historia-clinica-veterinaria">Abrir el generador</a>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post { padding: 3rem 1.25rem 0; max-width: 46rem; }
+  .post .lede { font-size: 1.2rem; margin-bottom: 2rem; }
+  .post__cta {
+    display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+    background: var(--pine-50); border-color: #d5e4dc; margin: 2rem 0;
+  }
+  .post__cta p { margin: 0.2rem 0 0; }
+  .tools { list-style: none; padding: 0; margin: 1.25rem 0; display: grid; gap: 0.75rem; }
+  .tools li {
+    padding: 0.9rem 1.1rem; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--paper-2);
+  }
+  .tools a { font-family: var(--font-display); font-weight: 600; }
+  @media (max-width: 640px) {
+    .post__cta { flex-direction: column; align-items: flex-start; }
+  }
+</style>
