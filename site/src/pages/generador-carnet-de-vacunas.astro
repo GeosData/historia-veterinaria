@@ -1,0 +1,225 @@
+---
+import Base from "../layouts/Base.astro";
+
+const fields = [
+  {
+    legend: "Datos de la clínica",
+    rows: [
+      [{ name: "clinica", label: "Nombre de la clínica" }, { name: "mvz", label: "Médico veterinario" }],
+      [{ name: "matricula", label: "Matrícula profesional" }, { name: "telefono", label: "Teléfono de la clínica" }],
+    ],
+  },
+  {
+    legend: "Paciente y propietario",
+    rows: [
+      [{ name: "paciente", label: "Nombre del paciente" }, { name: "propietario", label: "Propietario" }],
+      [{ name: "especie", label: "Especie" }, { name: "raza", label: "Raza" }],
+      [{ name: "sexo", label: "Sexo" }, { name: "nacimiento", label: "Nacimiento / edad" }],
+      [{ name: "color", label: "Color / señas" }, { name: "microchip", label: "Microchip" }],
+    ],
+  },
+];
+
+const vaccineCols = ["Fecha", "Vacuna", "Lote / laboratorio", "Próxima dosis", "Veterinario"];
+const vaccineKeys = ["fecha", "vacuna", "lote", "proxima", "vet"];
+const vaccineRows = Array.from({ length: 8 }, (_, i) => i);
+---
+
+<Base
+  title="Generador de carnet de vacunas para perros y gatos — descarga editable"
+  description="Crea y descarga el carnet de vacunación de perros y gatos, editable e imprimible, con el historial y la próxima dosis. Gratis, sin registro."
+  path="/generador-carnet-de-vacunas"
+>
+  <section class="wrap gen">
+    <header class="gen__head">
+      <p class="eyebrow">Generador gratis · sin registro</p>
+      <h1>Generador de carnet de vacunas</h1>
+      <p class="muted gen__sub">
+        Arma el carnet de vacunación de perros y gatos con el historial y la próxima dosis, y
+        descárgalo en Word para imprimir o entregar digital. Nada se sube — se genera en tu navegador.
+      </p>
+    </header>
+
+    <div class="gen__grid">
+      <form id="hc-form" class="gen__form">
+        {fields.map((group) => (
+          <fieldset class="card">
+            <legend>{group.legend}</legend>
+            {group.rows.map((row) => (
+              <div class="field-row">
+                {row.map((f) => (
+                  <label class="field">
+                    <span>{f.label}</span>
+                    <input type="text" name={f.name} autocomplete="off" />
+                  </label>
+                ))}
+              </div>
+            ))}
+          </fieldset>
+        ))}
+
+        <fieldset class="card">
+          <legend>Vacunas aplicadas</legend>
+          <div class="vac-scroll">
+            <div class="vac-table">
+              <div class="vac-head">
+                {vaccineCols.map((c) => <span>{c}</span>)}
+              </div>
+              {vaccineRows.map((i) => (
+                <div class="vac-row">
+                  {vaccineKeys.map((k) => (
+                    <input type="text" name={`vac${i}_${k}`} autocomplete="off" />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <aside class="gen__side">
+        <div class="card gen__actions">
+          <button id="download" class="btn btn-primary" type="button">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            Descargar en Word
+          </button>
+          <button id="clear" class="btn btn-tint" type="button">Limpiar</button>
+          <p class="muted gen__hint">Se descarga un archivo <strong>.doc</strong> con el carnet listo para imprimir o enviar. Deja filas vacías si aún no las usas.</p>
+        </div>
+
+        <div class="card gen__upsell">
+          <h3>¿Y el recordatorio de refuerzo?</h3>
+          <p class="muted">
+            En la app el carnet queda con el paciente y te avisa cuándo toca la próxima dosis.
+          </p>
+          <a class="btn btn-tint" href="/app">Conocer la app</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.getElementById("hc-form") as HTMLFormElement;
+
+  function value(name: string): string {
+    const el = form.elements.namedItem(name) as HTMLInputElement | null;
+    return (el?.value ?? "").trim();
+  }
+
+  function head(): string {
+    const pairs: [string, string][] = [
+      ["Clínica", value("clinica")],
+      ["Veterinario", `${value("mvz")}${value("matricula") ? " · Mat. " + value("matricula") : ""}`],
+      ["Paciente", value("paciente")],
+      ["Propietario", value("propietario")],
+      ["Especie / raza", [value("especie"), value("raza")].filter(Boolean).join(" · ")],
+      ["Sexo", value("sexo")],
+      ["Nacimiento / edad", value("nacimiento")],
+      ["Color / señas", value("color")],
+      ["Microchip", value("microchip")],
+    ];
+    return pairs
+      .map(([k, v]) => `<tr><td class="k">${k}</td><td>${v || "—"}</td></tr>`)
+      .join("");
+  }
+
+  function vaccineTable(): string {
+    const cols = ["Fecha", "Vacuna", "Lote / laboratorio", "Próxima dosis", "Veterinario"];
+    const keys = ["fecha", "vacuna", "lote", "proxima", "vet"];
+    let body = "";
+    for (let i = 0; i < 8; i++) {
+      const cells = keys.map((k) => value(`vac${i}_${k}`));
+      if (cells.every((c) => !c)) continue;
+      body += `<tr>${cells.map((c) => `<td>${c || "&nbsp;"}</td>`).join("")}</tr>`;
+    }
+    for (let extra = 0; extra < 2; extra++) {
+      body += `<tr>${cols.map(() => "<td>&nbsp;</td>").join("")}</tr>`;
+    }
+    return `<table class="vac"><tr>${cols.map((c) => `<th>${c}</th>`).join("")}</tr>${body}</table>`;
+  }
+
+  function buildDoc(): string {
+    return `<!doctype html><html><head><meta charset="utf-8"><style>
+      body{font-family:Calibri,Arial,sans-serif;color:#16201b;}
+      h1{font-size:20pt;margin:0 0 2pt;}
+      .sub{color:#4a5852;font-size:10pt;margin:0 0 16pt;}
+      h2{font-size:12pt;background:#eef4f0;padding:4pt 8pt;margin:14pt 0 4pt;}
+      table{width:100%;border-collapse:collapse;}
+      td{border:1px solid #dde3df;padding:5pt 8pt;font-size:10.5pt;vertical-align:top;}
+      td.k{width:34%;color:#4a5852;font-weight:bold;background:#f7f8f6;}
+      table.vac th{border:1px solid #dde3df;background:#eef4f0;padding:5pt 8pt;font-size:10pt;text-align:left;}
+      table.vac td{font-size:10pt;height:16pt;}
+    </style></head><body>
+      <h1>Carnet de Vacunación</h1>
+      <p class="sub">Perros y gatos · generado en veterinaria.geosdata.com</p>
+      <h2>Datos del paciente</h2>
+      <table>${head()}</table>
+      <h2>Historial de vacunas</h2>
+      ${vaccineTable()}
+    </body></html>`;
+  }
+
+  function slug(): string {
+    const p = value("paciente").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return p ? `carnet-vacunas-${p}` : "carnet-de-vacunas";
+  }
+
+  document.getElementById("download")?.addEventListener("click", () => {
+    const blob = new Blob(["﻿", buildDoc()], { type: "application/msword" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${slug()}.doc`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById("clear")?.addEventListener("click", () => {
+    if (confirm("¿Limpiar todos los campos?")) form.reset();
+  });
+</script>
+
+<style>
+  .gen { padding: 2.5rem 1.25rem 0; }
+  .gen__head { max-width: 60ch; margin-bottom: 2rem; }
+  .gen__sub { font-size: 1.05rem; }
+  .gen__grid { display: grid; grid-template-columns: 1fr 20rem; gap: 1.5rem; align-items: start; }
+  .gen__form { display: grid; gap: 1.25rem; }
+  fieldset { border: 1px solid var(--line); }
+  legend {
+    font-family: var(--font-display); font-weight: 600; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--pine-700);
+    padding: 0 0.5rem;
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 0.9rem; }
+  .field-row:last-child { margin-bottom: 0; }
+  .field { display: grid; gap: 0.3rem; }
+  .field span { font-size: 0.82rem; color: var(--ink-soft); font-weight: 500; }
+  input, textarea {
+    font-family: var(--font-body); font-size: 0.98rem; color: var(--ink);
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.55rem 0.7rem; width: 100%;
+  }
+  input:focus { outline: 2px solid var(--pine-300); border-color: var(--pine-300); }
+
+  .vac-scroll { overflow-x: auto; }
+  .vac-table { min-width: 34rem; display: grid; gap: 0.5rem; }
+  .vac-head, .vac-row { display: grid; grid-template-columns: 0.8fr 1.2fr 1.2fr 0.9fr 1fr; gap: 0.5rem; }
+  .vac-head span {
+    font-size: 0.72rem; font-weight: 600; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .vac-row input { padding: 0.45rem 0.55rem; font-size: 0.9rem; }
+
+  .gen__side { position: sticky; top: 5rem; display: grid; gap: 1.25rem; }
+  .gen__actions { display: grid; gap: 0.75rem; }
+  .gen__hint { font-size: 0.82rem; margin: 0.25rem 0 0; }
+  .gen__upsell h3 { margin-bottom: 0.4rem; }
+
+  @media (max-width: 820px) {
+    .gen__grid { grid-template-columns: 1fr; }
+    .gen__side { position: static; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+</style>
