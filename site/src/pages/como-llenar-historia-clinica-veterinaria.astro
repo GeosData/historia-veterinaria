@@ -1,0 +1,85 @@
+---
+import Base from "../layouts/Base.astro";
+
+const steps = [
+  { h: "Identificación de la clínica y el veterinario", p: "Nombre de la clínica, médico veterinario responsable y su tarjeta profesional. La firma del MVZ da validez legal al documento." },
+  { h: "Datos del propietario", p: "Nombre, documento, teléfono y dirección. Son necesarios para el consentimiento informado y para el recordatorio de revacunación." },
+  { h: "Reseña del paciente", p: "Especie, raza, sexo, edad, peso, color y señas particulares. La reseña identifica al animal de forma única y orienta el diagnóstico." },
+  { h: "Motivo de consulta y anamnesis", p: "Qué trae al paciente y su historia reciente: síntomas, duración, alimentación, vacunas, desparasitación y antecedentes." },
+  { h: "Examen físico", p: "Constantes fisiológicas (temperatura, frecuencia cardíaca y respiratoria), estado de mucosas, hidratación y condición corporal, más los hallazgos por sistema." },
+  { h: "Diagnóstico y plan", p: "Diagnóstico presuntivo, plan diagnóstico (exámenes) y tratamiento instaurado. Aquí se registra también el consentimiento cuando hay procedimientos." },
+];
+---
+
+<Base
+  title="Cómo llenar una historia clínica veterinaria (guía + formato) — COMVEZCOL"
+  description="Guía paso a paso para llenar la historia clínica veterinaria según el formato de COMVEZCOL, con los campos que no deben faltar. Incluye generador gratis para descargarla editable."
+  path="/como-llenar-historia-clinica-veterinaria"
+>
+  <article class="wrap post">
+    <p class="eyebrow">Guía</p>
+    <h1>Cómo llenar una historia clínica veterinaria</h1>
+    <p class="lede muted">
+      La historia clínica es el registro legal y médico de cada paciente. En Colombia,
+      COMVEZCOL (Ley 576, art. 27) la exige, pero no hay un formato único obligatorio —
+      solo unos campos que no pueden faltar. Esta es la guía, y al final la generas y la descargas.
+    </p>
+
+    <div class="post__cta card">
+      <div>
+        <strong>¿Prefieres llenarla ya?</strong>
+        <p class="muted">El generador arma el formato editable en dos minutos.</p>
+      </div>
+      <a class="btn btn-primary" href="/generador-historia-clinica-veterinaria">Abrir el generador</a>
+    </div>
+
+    <ol class="steps">
+      {steps.map((s, i) => (
+        <li>
+          <span class="steps__n">{i + 1}</span>
+          <div>
+            <h3>{s.h}</h3>
+            <p class="muted">{s.p}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <h2>Qué pasa después de la primera consulta</h2>
+    <p class="muted">
+      El valor real de la historia clínica no es el documento de hoy — es poder consultarla
+      en la próxima visita: qué se vacunó, qué tratamiento se dio, cuándo toca revacunar.
+      Un PDF suelto no hace eso. Por eso el generador es la puerta: llenas y descargas hoy, y
+      cuando quieras guardar el historial y recibir el recordatorio de revacunación, entras a la app.
+    </p>
+
+    <div class="post__cta card">
+      <div>
+        <strong>Genera y descarga tu historia clínica</strong>
+        <p class="muted">Gratis, editable, basada en COMVEZCOL.</p>
+      </div>
+      <a class="btn btn-primary" href="/generador-historia-clinica-veterinaria">Generar ahora</a>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post { padding: 3rem 1.25rem 0; max-width: 46rem; }
+  .post .lede { font-size: 1.2rem; margin-bottom: 2rem; }
+  .post__cta {
+    display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+    background: var(--pine-50); border-color: #d5e4dc; margin: 2rem 0;
+  }
+  .post__cta p { margin: 0.2rem 0 0; }
+  .steps { list-style: none; padding: 0; margin: 2.5rem 0; display: grid; gap: 1.5rem; }
+  .steps li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+  .steps__n {
+    font-family: var(--font-display); font-weight: 700; color: var(--pine-500);
+    background: var(--pine-50); width: 2.2rem; height: 2.2rem; border-radius: 999px;
+    display: grid; place-items: center; font-size: 1rem;
+  }
+  .steps h3 { margin-bottom: 0.25rem; }
+  @media (max-width: 640px) {
+    .post__cta { flex-direction: column; align-items: flex-start; }
+  }
+</style>

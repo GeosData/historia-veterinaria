@@ -8,7 +8,13 @@ def list_clinics(uid: str) -> list[Clinic]:
     return [_to_clinic(row) for row in clinics.list_for_user(uid)]
 
 
+class ClinicNameExists(Exception):
+    pass
+
+
 def create_clinic(payload: ClinicCreate, uid: str, email: str) -> Clinic:
+    if clinics.exists_by_name(uid, payload.name):
+        raise ClinicNameExists()
     row = clinics.insert(name=payload.name, email=email, user_id=uid)
     return _to_clinic(row)
 

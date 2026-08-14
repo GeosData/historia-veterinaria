@@ -1,0 +1,105 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+}
+
+const { title, description, path = "" } = Astro.props;
+const normalized = path === "" || path === "/" ? "/" : `${path.replace(/\/$/, "")}/`;
+const canonical = new URL(normalized, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A9%BA%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header class="site-head">
+      <div class="wrap site-head__row">
+        <a class="brand" href="/">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4v5a4 4 0 0 0 8 0V4"/><path d="M12 13v3a4 4 0 0 0 4 4h1"/><circle cx="18" cy="20" r="2"/></svg>
+          <span>Historia Clínica Veterinaria</span>
+        </a>
+        <nav class="site-head__nav">
+          <a href="/generador-historia-clinica-veterinaria">Generador</a>
+          <a href="/como-llenar-historia-clinica-veterinaria">Cómo llenarla</a>
+          <a class="btn btn-tint" href="/app">Entrar</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-foot">
+      <div class="wrap">
+        <p class="muted">
+          Basado en el formato de historia clínica y consentimiento de COMVEZCOL (Ley 576, art. 27).
+        </p>
+      </div>
+    </footer>
+
+    <style>
+      .site-head {
+        border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--paper) 82%, transparent);
+        backdrop-filter: blur(8px);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .site-head__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 4rem;
+        gap: 1rem;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-family: var(--font-display);
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .brand .icon { color: var(--pine-500); width: 1.4rem; height: 1.4rem; }
+      .site-head__nav {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        font-family: var(--font-display);
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+      .site-head__nav a { color: var(--ink-soft); text-decoration: none; }
+      .site-head__nav a:hover { color: var(--pine-700); }
+      .site-head__nav a.btn { color: var(--pine-700); }
+      .site-foot {
+        border-top: 1px solid var(--line);
+        margin-top: 5rem;
+        padding: 2.5rem 0;
+        font-size: 0.9rem;
+      }
+      .site-foot p { margin: 0 0 0.5rem; }
+      @media (max-width: 640px) {
+        .site-head__nav a:not(.btn) { display: none; }
+      }
+    </style>
+  </body>
+</html>

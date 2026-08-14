@@ -7,7 +7,7 @@ def list_for_user(user_id: str) -> list[dict[str, Any]]:
     with get_conn() as conn:
         rows = conn.execute(
             """
-            SELECT id, user_id, name, license, email, created_at
+            SELECT id, user_id, name, title, license, email, created_at
             FROM vets
             WHERE user_id = %s
             ORDER BY created_at DESC
@@ -29,17 +29,18 @@ def exists(vet_id: str, user_id: str) -> bool:
 def insert(
     user_id: str,
     name: str,
+    title: str | None,
     license: str | None,
     email: str | None,
 ) -> dict[str, Any]:
     with get_conn() as conn:
         row = conn.execute(
             """
-            INSERT INTO vets (user_id, name, license, email)
-            VALUES (%s, %s, %s, %s)
-            RETURNING id, user_id, name, license, email, created_at
+            INSERT INTO vets (user_id, name, title, license, email)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id, user_id, name, title, license, email, created_at
             """,
-            (user_id, name, license, email),
+            (user_id, name, title, license, email),
         ).fetchone()
         conn.commit()
     return row
@@ -49,6 +50,7 @@ def update(
     vet_id: str,
     user_id: str,
     name: str | None,
+    title: str | None,
     license: str | None,
     email: str | None,
 ) -> dict[str, Any] | None:
@@ -57,12 +59,13 @@ def update(
             """
             UPDATE vets
             SET name = COALESCE(%s, name),
+                title = COALESCE(%s, title),
                 license = COALESCE(%s, license),
                 email = COALESCE(%s, email)
             WHERE id = %s AND user_id = %s
-            RETURNING id, user_id, name, license, email, created_at
+            RETURNING id, user_id, name, title, license, email, created_at
             """,
-            (name, license, email, vet_id, user_id),
+            (name, title, license, email, vet_id, user_id),
         ).fetchone()
         conn.commit()
     return row

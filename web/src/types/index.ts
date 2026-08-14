@@ -10,12 +10,14 @@ export interface Clinic {
 
 export interface VetCreate {
   name: string
+  title?: string | null
   license?: string | null
   email?: string | null
 }
 
 export interface VetUpdate {
   name?: string
+  title?: string | null
   license?: string | null
   email?: string | null
 }
@@ -23,8 +25,20 @@ export interface VetUpdate {
 export interface Vet {
   id: string
   name: string
+  title?: string | null
   license?: string | null
   email?: string | null
+  created_at: string
+}
+
+export interface SpeciesCreate {
+  name: string
+}
+
+export interface Species {
+  id: string
+  user_id: string
+  name: string
   created_at: string
 }
 

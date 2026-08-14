@@ -1,10 +1,31 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
-export function Spinner({ label = 'Cargando…' }: { label?: string }) {
+const LOADING_MESSAGES = [
+  'Preparando el consultorio…',
+  'Revisando historias clínicas…',
+  'Buscando a los pacientes…',
+  'Acomodando los carnets de vacunas…',
+  'Saludando a las mascotas…',
+  'Ordenando los expedientes…',
+  'Afilando el estetoscopio…',
+  'Poniendo al día las vacunas…',
+  'Llamando a los dueños…',
+  'Contando las croquetas…',
+]
+
+export function Spinner({ label }: { label?: string }) {
+  const [message, setMessage] = useState(LOADING_MESSAGES[0])
+  useEffect(() => {
+    if (label) return
+    const pick = () => setMessage(LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)])
+    pick()
+    const id = setInterval(pick, 1800)
+    return () => clearInterval(id)
+  }, [label])
   return (
     <div className="flex items-center justify-center gap-3 py-10 text-ink-500">
       <span className="h-5 w-5 animate-spin rounded-full border-2 border-brand-300 border-t-transparent" />
-      <span className="text-sm">{label}</span>
+      <span className="text-sm">{label ?? message}</span>
     </div>
   )
 }

@@ -20,12 +20,14 @@ class Clinic(BaseModel):
 
 class VetCreate(BaseModel):
     name: str
+    title: str | None = None
     license: str | None = None
     email: str | None = None
 
 
 class VetUpdate(BaseModel):
     name: str | None = None
+    title: str | None = None
     license: str | None = None
     email: str | None = None
 
@@ -34,6 +36,7 @@ class Vet(BaseModel):
     id: str
     user_id: str
     name: str
+    title: str | None = None
     license: str | None = None
     email: str | None = None
     created_at: datetime
@@ -41,6 +44,17 @@ class Vet(BaseModel):
 
 class ClinicVetAssociate(BaseModel):
     vet_id: str
+
+
+class SpeciesCreate(BaseModel):
+    name: str
+
+
+class Species(BaseModel):
+    id: str
+    user_id: str
+    name: str
+    created_at: datetime
 
 
 class OwnerCreate(BaseModel):

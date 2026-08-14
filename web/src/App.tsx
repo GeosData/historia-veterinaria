@@ -7,10 +7,11 @@ import { OnboardingPage } from './pages/OnboardingPage'
 import { PatientDetailPage } from './pages/PatientDetailPage'
 import { PatientsPage } from './pages/PatientsPage'
 import { RemindersPage } from './pages/RemindersPage'
+import { SpeciesSettingsPage } from './pages/SettingsPage'
 
 export function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/app">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
@@ -21,6 +22,8 @@ export function App() {
               <Route path="/pacientes/:id" element={<PatientDetailPage />} />
               <Route path="/medicos" element={<MedicosPage />} />
               <Route path="/recordatorios" element={<RemindersPage />} />
+              <Route path="/ajustes" element={<Navigate to="/ajustes/especies" replace />} />
+              <Route path="/ajustes/especies" element={<SpeciesSettingsPage />} />
             </Route>
           </Route>
         </Route>

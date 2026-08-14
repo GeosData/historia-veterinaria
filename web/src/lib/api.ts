@@ -11,6 +11,8 @@ import type {
   PatientHistory,
   PatientListItem,
   Reminder,
+  Species,
+  SpeciesCreate,
   Vaccine,
   VaccineCreate,
   Vet,
@@ -103,6 +105,14 @@ export const api = {
     request<Vet>(`/clinics/${clinicId}/vets`, { method: 'POST', body: { vet_id: vetId } }),
   removeClinicVet: (clinicId: string, vetId: string) =>
     request<void>(`/clinics/${clinicId}/vets/${vetId}`, { method: 'DELETE' }),
+
+  listSpecies: () => request<Species[]>('/species'),
+  createSpecies: (input: SpeciesCreate) =>
+    request<Species>('/species', { method: 'POST', body: input }),
+  updateSpecies: (speciesId: string, input: SpeciesCreate) =>
+    request<Species>(`/species/${speciesId}`, { method: 'PATCH', body: input }),
+  deleteSpecies: (speciesId: string) =>
+    request<void>(`/species/${speciesId}`, { method: 'DELETE' }),
 
   listOwners: (clinicId: string) => request<Owner[]>(`/clinics/${clinicId}/owners`),
   createOwner: (clinicId: string, input: OwnerCreate) =>

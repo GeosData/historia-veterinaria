@@ -10,19 +10,32 @@ export function LoginPage() {
   const user = useAuthStore((state) => state.user)
   const clinics = useAuthStore((state) => state.clinics)
   const clinicsStatus = useAuthStore((state) => state.clinicsStatus)
+  const refreshClinics = useAuthStore((state) => state.refreshClinics)
 
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
   if (user) {
-    if (clinicsStatus !== 'ready') {
-      return (
-        <div className="flex min-h-screen items-center justify-center bg-ink-50">
-          <Spinner />
-        </div>
-      )
+    if (clinicsStatus === 'ready') {
+      return <Navigate to={clinics.length > 0 ? '/pacientes' : '/onboarding'} replace />
     }
-    return <Navigate to={clinics.length > 0 ? '/pacientes' : '/onboarding'} replace />
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-ink-50 px-6 text-center">
+        {clinicsStatus === 'error' ? (
+          <>
+            <p className="text-sm text-ink-600">No pudimos cargar tus clínicas. Revisa tu conexión.</p>
+            <button
+              onClick={() => void refreshClinics()}
+              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
+            >
+              Reintentar
+            </button>
+          </>
+        ) : (
+          <Spinner />
+        )}
+      </div>
+    )
   }
 
   const onGoogle = async () => {

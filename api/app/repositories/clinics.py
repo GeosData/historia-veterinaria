@@ -35,6 +35,15 @@ def belongs_to_user(clinic_id: str, user_id: str) -> bool:
     return row is not None
 
 
+def exists_by_name(user_id: str, name: str) -> bool:
+    with get_conn() as conn:
+        row = conn.execute(
+            "SELECT 1 FROM clinics WHERE user_id = %s AND lower(btrim(name)) = lower(btrim(%s))",
+            (user_id, name),
+        ).fetchone()
+    return row is not None
+
+
 def insert(name: str, email: str, user_id: str) -> dict[str, Any]:
     with get_conn() as conn:
         row = conn.execute(

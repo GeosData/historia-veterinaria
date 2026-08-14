@@ -1,0 +1,119 @@
+@import "@fontsource-variable/hanken-grotesk";
+@import "@fontsource-variable/schibsted-grotesk";
+
+:root {
+  --pine-900: #12241d;
+  --pine-700: #1c3a2e;
+  --pine-500: #2f6b4f;
+  --pine-300: #6ba585;
+  --pine-50: #eef4f0;
+  --paper: #f7f8f6;
+  --paper-2: #ffffff;
+  --ink: #16201b;
+  --ink-soft: #4a5852;
+  --line: #dde3df;
+  --amber: #d98a3d;
+
+  --font-body: "Hanken Grotesk Variable", system-ui, sans-serif;
+  --font-display: "Schibsted Grotesk Variable", var(--font-body);
+
+  --radius: 14px;
+  --radius-pill: 999px;
+  --wrap: 68rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5em;
+}
+
+h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); font-weight: 700; }
+h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 600; }
+h3 { font-size: 1.2rem; font-weight: 600; }
+
+a { color: var(--pine-500); }
+
+p { margin: 0 0 1rem; }
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pine-500);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-pill);
+  border: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--pine-500);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--pine-700); }
+
+.btn-tint {
+  background: var(--pine-50);
+  color: var(--pine-700);
+}
+.btn-tint:hover { background: #e2ece6; }
+
+.card {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.icon {
+  width: 1.15em;
+  height: 1.15em;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  fill: none;
+  flex: none;
+}
+
+.muted { color: var(--ink-soft); }

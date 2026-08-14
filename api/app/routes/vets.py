@@ -21,6 +21,7 @@ def create_vet(
     row = vets.insert(
         user_id=str(user["uid"]),
         name=payload.name,
+        title=payload.title,
         license=payload.license,
         email=payload.email,
     )
@@ -37,6 +38,7 @@ def update_vet(
         vet_id=vet_id,
         user_id=str(user["uid"]),
         name=payload.name,
+        title=payload.title,
         license=payload.license,
         email=payload.email,
     )

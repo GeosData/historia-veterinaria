@@ -39,6 +39,12 @@ export function dueLabel(days: number | null): string {
   return `En ${days} días`
 }
 
+export function vetLabel(vet: { name: string; title?: string | null }): string {
+  const name = vet.name.trim()
+  const title = vet.title?.trim()
+  return title ? `${name}, ${title}` : name
+}
+
 export function examToText(exam?: Record<string, unknown> | null): string {
   if (!exam) return ''
   const notes = exam.notes

@@ -1,18 +1,34 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import type { ReactNode } from 'react'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { logout } from '../lib/firebase'
 import { useAuthStore } from '../store/auth'
 import { Button } from './Button'
 
 const NEW_CLINIC_VALUE = '__new__'
 
-const navItems = [
+type NavItem = {
+  to: string
+  label: string
+  icon: () => ReactNode
+  children?: { to: string; label: string }[]
+}
+
+const navItems: NavItem[] = [
   { to: '/pacientes', label: 'Pacientes', icon: PawIcon },
   { to: '/medicos', label: 'Médicos', icon: StethoscopeIcon },
   { to: '/recordatorios', label: 'Recordatorios', icon: BellIcon },
+  {
+    to: '/ajustes',
+    label: 'Ajustes',
+    icon: GearIcon,
+    children: [{ to: '/ajustes/especies', label: 'Especies' }],
+  },
 ]
 
 export function Layout() {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   const onLogout = async () => {
     await logout()
@@ -25,22 +41,26 @@ export function Layout() {
         <div className="flex items-center justify-between px-5 py-5 lg:flex-col lg:items-stretch lg:gap-8">
           <Brand />
           <nav className="flex gap-1 lg:flex-col">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ${
-                    isActive
-                      ? 'bg-brand-50 text-brand-700'
-                      : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900'
-                  }`
-                }
-              >
-                <item.icon />
-                {item.label}
-              </NavLink>
-            ))}
+            {navItems.map((item) =>
+              item.children ? (
+                <NavGroup key={item.to} item={item} pathname={pathname} />
+              ) : (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                      isActive
+                        ? 'bg-brand-50 text-brand-700'
+                        : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900'
+                    }`
+                  }
+                >
+                  <item.icon />
+                  {item.label}
+                </NavLink>
+              ),
+            )}
           </nav>
           <div className="hidden lg:mt-auto lg:block">
             <ClinicSwitcher />
@@ -61,6 +81,64 @@ export function Layout() {
         <Outlet />
       </main>
     </div>
+  )
+}
+
+function NavGroup({ item, pathname }: { item: NavItem; pathname: string }) {
+  const [open, setOpen] = useState(pathname.startsWith(item.to))
+  const children = item.children ?? []
+
+  return (
+    <div className="lg:space-y-1">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ${
+          pathname.startsWith(item.to)
+            ? 'bg-brand-50 text-brand-700'
+            : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900'
+        }`}
+        aria-expanded={open}
+      >
+        <item.icon />
+        {item.label}
+        <ChevronIcon className={`ml-auto h-4 w-4 transition ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div className="ml-4 flex gap-1 border-l border-ink-100 pl-3 lg:flex-col">
+          {children.map((child) => (
+            <NavLink
+              key={child.to}
+              to={child.to}
+              className={({ isActive }) =>
+                `rounded-lg px-3 py-1.5 text-sm transition ${
+                  isActive ? 'font-medium text-brand-700' : 'text-ink-500 hover:text-ink-800'
+                }`
+              }
+            >
+              {child.label}
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
   )
 }
 
@@ -142,6 +220,24 @@ function StethoscopeIcon() {
       <path d="M5 3v5a4 4 0 0 0 8 0V3" />
       <path d="M9 15a5 5 0 0 0 5 5 4 4 0 0 0 4-4v-2" />
       <circle cx="18" cy="10" r="2" />
+    </svg>
+  )
+}
+
+function GearIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
     </svg>
   )
 }

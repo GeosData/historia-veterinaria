@@ -7,7 +7,7 @@ def list_vets_for_clinic(clinic_id: str) -> list[dict[str, Any]]:
     with get_conn() as conn:
         rows = conn.execute(
             """
-            SELECT v.id, v.user_id, v.name, v.license, v.email, v.created_at
+            SELECT v.id, v.user_id, v.name, v.title, v.license, v.email, v.created_at
             FROM clinic_vets cv
             JOIN vets v ON v.id = cv.vet_id
             WHERE cv.clinic_id = %s

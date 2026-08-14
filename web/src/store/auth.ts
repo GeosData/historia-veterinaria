@@ -5,7 +5,7 @@ import { auth } from '../lib/firebase'
 import { listClinics } from '../lib/api'
 import type { Clinic } from '../types'
 
-type ClinicsStatus = 'idle' | 'loading' | 'ready'
+type ClinicsStatus = 'idle' | 'loading' | 'ready' | 'error'
 
 const ACTIVE_CLINIC_KEY = 'active_clinic_id'
 
@@ -61,7 +61,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       persistActiveClinicId(activeClinicId)
       set({ clinics, activeClinicId, clinicsStatus: 'ready' })
     } catch {
-      set({ clinics: [], clinicsStatus: 'ready' })
+      set({ clinicsStatus: 'error' })
     }
   },
 }))

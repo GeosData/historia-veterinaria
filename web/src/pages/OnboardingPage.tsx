@@ -67,7 +67,7 @@ export function OnboardingPage() {
 
           {error && <ErrorNote message={error} />}
 
-          <Field label="Nombre de la clínica" htmlFor="name">
+          <Field label="Nombre de la clínica" htmlFor="name" required>
             <TextInput
               id="name"
               required

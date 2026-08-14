@@ -9,6 +9,7 @@ from app.routes import (
     owners,
     patients,
     reminders,
+    species,
     vaccines,
     vets,
 )
@@ -33,6 +34,7 @@ def create_app() -> FastAPI:
     app.include_router(clinics.router)
     app.include_router(vets.router)
     app.include_router(clinic_vets.router)
+    app.include_router(species.router)
     app.include_router(owners.router)
     app.include_router(patients.router)
     app.include_router(consultations.router)

@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.middleware.auth import require_clinic_access, require_user
 from app.schemas.models import Clinic, ClinicCreate
 from app.services import clinics as clinics_service
+from app.services.clinics import ClinicNameExists
 
 router = APIRouter(tags=["clinics"])
 
@@ -17,11 +18,17 @@ def create_clinic(
     payload: ClinicCreate,
     user: dict[str, str | None] = Depends(require_user),
 ) -> Clinic:
-    return clinics_service.create_clinic(
-        payload,
-        uid=str(user["uid"]),
-        email=str(user["email"]),
-    )
+    try:
+        return clinics_service.create_clinic(
+            payload,
+            uid=str(user["uid"]),
+            email=str(user["email"]),
+        )
+    except ClinicNameExists:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Ya tienes una clínica con ese nombre.",
+        )
 
 
 @router.get("/clinics/{clinic_id}", response_model=Clinic)

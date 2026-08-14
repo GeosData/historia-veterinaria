@@ -7,7 +7,7 @@ import { Badge, EmptyState, ErrorNote, Spinner } from '../components/Feedback'
 import { Field, Select, TextArea, TextInput } from '../components/Field'
 import { Modal } from '../components/Modal'
 import { api, ApiError } from '../lib/api'
-import { daysUntil, dueLabel, examToText, formatDate, today } from '../lib/format'
+import { daysUntil, dueLabel, examToText, formatDate, today, vetLabel } from '../lib/format'
 import { useAuthStore } from '../store/auth'
 import type {
   Consultation,
@@ -268,14 +268,14 @@ function ConsultationModal({ open, clinicId, patientId, onClose, onSaved }: Cons
       <form onSubmit={onSubmit} className="space-y-4">
         {error && <ErrorNote message={error} />}
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Fecha">
+          <Field label="Fecha" required={false}>
             <TextInput
               type="date"
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
             />
           </Field>
-          <Field label="Próxima visita">
+          <Field label="Próxima visita" required={false}>
             <TextInput
               type="date"
               value={form.next_visit}
@@ -285,6 +285,7 @@ function ConsultationModal({ open, clinicId, patientId, onClose, onSaved }: Cons
         </div>
         <Field
           label="Médico que atendió"
+          required={false}
           hint={vets.length === 0 ? 'No hay médicos asociados a esta clínica.' : undefined}
         >
           <Select
@@ -295,19 +296,18 @@ function ConsultationModal({ open, clinicId, patientId, onClose, onSaved }: Cons
             <option value="">Sin especificar</option>
             {vets.map((vet) => (
               <option key={vet.id} value={vet.id}>
-                {vet.name}
-                {vet.license ? ` · ${vet.license}` : ''}
+                {vetLabel(vet)}
               </option>
             ))}
           </Select>
         </Field>
-        <Field label="Motivo de consulta">
+        <Field label="Motivo de consulta" required={false}>
           <TextInput
             value={form.reason}
             onChange={(e) => setForm({ ...form, reason: e.target.value })}
           />
         </Field>
-        <Field label="Examen físico (hallazgos)">
+        <Field label="Examen físico (hallazgos)" required={false}>
           <TextArea
             rows={3}
             value={form.exam}
@@ -315,20 +315,20 @@ function ConsultationModal({ open, clinicId, patientId, onClose, onSaved }: Cons
           />
         </Field>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Diagnóstico presuntivo">
+          <Field label="Diagnóstico presuntivo" required={false}>
             <TextInput
               value={form.dx_presumptive}
               onChange={(e) => setForm({ ...form, dx_presumptive: e.target.value })}
             />
           </Field>
-          <Field label="Diagnóstico definitivo">
+          <Field label="Diagnóstico definitivo" required={false}>
             <TextInput
               value={form.dx_definitive}
               onChange={(e) => setForm({ ...form, dx_definitive: e.target.value })}
             />
           </Field>
         </div>
-        <Field label="Tratamiento">
+        <Field label="Tratamiento" required={false}>
           <TextArea
             rows={3}
             value={form.treatment}
