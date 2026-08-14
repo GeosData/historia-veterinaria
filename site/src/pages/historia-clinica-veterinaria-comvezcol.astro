@@ -1,0 +1,95 @@
+---
+import Base from "../layouts/Base.astro";
+
+const campos = [
+  { h: "Identificación", p: "Establecimiento (clínica) e ID de la historia clínica: consecutivo con fecha y hora." },
+  { h: "Propietario", p: "Datos del responsable del paciente. La historia es reservada: solo el propietario o casos de ley pueden conocerla (art. 61, Ley 576), y aplica habeas data (Ley 1581 de 2012)." },
+  { h: "Reseña del paciente", p: "Especie, raza, sexo, edad, color, señas particulares y microchip. Identifica al animal de forma única." },
+  { h: "Anamnesis", p: "Dieta, vacunas, desparasitación, esterilización y antecedentes relevantes." },
+  { h: "Examen físico", p: "Condición corporal, temperatura, frecuencia cardíaca y respiratoria, TLLC, mucosas y porcentaje de deshidratación." },
+  { h: "Diagnóstico y plan", p: "Lista de problemas y diferenciales, exámenes complementarios, diagnóstico presuntivo y definitivo, plan terapéutico y pronóstico." },
+  { h: "Evolución y anexos", p: "Evolución cronológica, observaciones y anexos (entre ellos los consentimientos informados)." },
+  { h: "Firma y matrícula", p: "Firma del médico veterinario con su matrícula profesional. Es obligatoria para ejercer y firmar (Ley 576)." },
+];
+---
+
+<Base
+  title="Historia clínica veterinaria COMVEZCOL: qué exige el formato (2026)"
+  description="Qué pide COMVEZCOL en la historia clínica veterinaria según la Ley 576: los campos obligatorios, la matrícula, la reserva de datos. Con generador gratis del formato."
+  path="/historia-clinica-veterinaria-comvezcol"
+>
+  <article class="wrap post">
+    <p class="eyebrow">El formato oficial</p>
+    <h1>Historia clínica veterinaria COMVEZCOL: qué exige</h1>
+    <p class="lede muted">
+      COMVEZCOL es el Consejo Profesional de Medicina Veterinaria y de Zootecnia de Colombia.
+      La Ley 576 de 2000 regula el ejercicio y hace obligatorio llevar y firmar la historia clínica.
+      Pero no hay un número de formato único — hay unos campos que no pueden faltar. Estos son.
+    </p>
+
+    <div class="post__cta card">
+      <div>
+        <strong>Genera el formato ya</strong>
+        <p class="muted">El generador arma la historia clínica con estos campos, editable.</p>
+      </div>
+      <a class="btn btn-primary" href="/generador-historia-clinica-veterinaria">Abrir el generador</a>
+    </div>
+
+    <h2>¿Hay un formato oficial obligatorio?</h2>
+    <p class="muted">
+      No existe un formato de número estándar que el Estado imponga. Lo que sí es obligatorio es la
+      <strong>matrícula profesional</strong> para ejercer y firmar cualquier historia clínica o fórmula
+      (Ley 576). COMVEZCOL, en su informe de historia clínica y consentimiento informado (2018), definió
+      qué debe contener el documento. Esa es la referencia que sigue este formato.
+    </p>
+
+    <h2>Los campos que exige</h2>
+    <ol class="steps">
+      {campos.map((c, i) => (
+        <li>
+          <span class="steps__n">{i + 1}</span>
+          <div>
+            <h3>{c.h}</h3>
+            <p class="muted">{c.p}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <h2>La historia clínica es reservada</h2>
+    <p class="muted">
+      No es un documento público. Solo el propietario —o los casos que la ley permite— puede conocerla
+      (art. 61 de la Ley 576), y el manejo de esos datos se rige por la Ley 1581 de 2012 (habeas data).
+      Guardarla ordenada y con acceso controlado no es opcional.
+    </p>
+
+    <div class="post__cta card">
+      <div>
+        <strong>Arma tu historia clínica con estos campos</strong>
+        <p class="muted">Gratis, editable, y con el consentimiento informado como anexo.</p>
+      </div>
+      <a class="btn btn-primary" href="/generador-historia-clinica-veterinaria">Generar ahora</a>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post { padding: 3rem 1.25rem 0; max-width: 46rem; }
+  .post .lede { font-size: 1.2rem; margin-bottom: 2rem; }
+  .post__cta {
+    display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+    background: var(--pine-50); border-color: #d5e4dc; margin: 2rem 0;
+  }
+  .post__cta p { margin: 0.2rem 0 0; }
+  .steps { list-style: none; padding: 0; margin: 2rem 0; display: grid; gap: 1.5rem; }
+  .steps li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+  .steps__n {
+    font-family: var(--font-display); font-weight: 700; color: var(--pine-500);
+    background: var(--pine-50); width: 2.2rem; height: 2.2rem; border-radius: 999px;
+    display: grid; place-items: center; font-size: 1rem;
+  }
+  .steps h3 { margin-bottom: 0.25rem; }
+  @media (max-width: 640px) {
+    .post__cta { flex-direction: column; align-items: flex-start; }
+  }
+</style>
