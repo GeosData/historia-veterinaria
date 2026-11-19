@@ -26,7 +26,7 @@ export function LoginPage() {
             <p className="text-sm text-ink-600">No pudimos cargar tus clínicas. Revisa tu conexión.</p>
             <button
               onClick={() => void refreshClinics()}
-              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
+              className="rounded-full bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-300"
             >
               Reintentar
             </button>
