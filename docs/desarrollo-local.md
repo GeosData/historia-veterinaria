@@ -9,7 +9,7 @@
 cd api
 ./.venv/Scripts/python.exe -m uvicorn app.main:app --reload --port 8000
 ```
-Usa `api/.env`: `DATABASE_URL` (Neon) + `FIREBASE_PROJECT_ID=geosdata-apps`.
+Usa `api/.env`: `DATABASE_URL` (Neon) + `FIREBASE_PROJECT_ID=geosdata`.
 
 **Frontend** (Vite dev, puerto 5173):
 ```
