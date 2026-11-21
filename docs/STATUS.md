@@ -9,7 +9,7 @@ Protocolo: `docs/status-protocol.md` del vault. Origen: triage de proyectos `F:\
 - status: done
 - owner: claude
 - verified: 2026-11-19
-- evidence: 5 archivos sin commitear. 2026-11-19: commit e3fa433 pusheado (botones pill, focus visible, acento AA, DESIGN.md)
+- evidence: 5 archivos sin commitear. 2026-11-19: commit e3fa433 pusheado (botones pill, focus visible, acento AA, DESIGN.md). 2026-11-20: desplegado en CF Pages (https://9b7b9480.historia-veterinaria.pages.dev, HEAD a670636), dominio 200 y CSS con focus ring
 - verify: `git -C F:/products/geosdata/historia-veterinaria status --porcelain`
 ## T-002 · Definir canal de captación
 - status: open
