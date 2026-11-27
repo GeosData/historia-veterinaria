@@ -67,13 +67,63 @@ import Base from "../layouts/Base.astro";
     </div>
   </section>
 
+  <section id="precios" class="wrap band">
+    <h2>Planes claros en pesos colombianos, sin contratos</h2>
+    <p class="muted band__sub">
+      Empieza gratis con el generador COMVEZCOL. Cuando quieras guardar el historial de cada mascota en la nube y ver qué pacientes toca revacunar, prueba la app <strong>14 días gratis sin tarjeta</strong>. Nos enfocamos 100 % en la parte clínica (complementa Alegra o Siigo sin duplicar costos).
+    </p>
+    <div class="grid-3 pricing-grid">
+      <article class="card price-card">
+        <p class="eyebrow">Sin registro</p>
+        <h3>Gratis</h3>
+        <p class="price-val">$0 <span>COP</span></p>
+        <ul class="ticks">
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Generador COMVEZCOL ilimitado</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Descarga editable en Word / impresión PDF</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Ideal para probar el formato hoy mismo</li>
+        </ul>
+        <a class="btn btn-tint price-btn" href="/generador-historia-clinica-veterinaria">Abrir generador gratis</a>
+      </article>
+      <article class="card price-card price-featured">
+        <p class="eyebrow">1 veterinario · domicilio o consultorio</p>
+        <h3>Independiente</h3>
+        <p class="price-val">$29.000 <span>COP / mes</span></p>
+        <p class="muted price-sub">o $290.000 COP / año (2 meses gratis)</p>
+        <ul class="ticks">
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Historias y pacientes ilimitados en la nube</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Panel de vacunas y recordatorios para enviar por WhatsApp</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Respaldo diario + exportación completa de tus historias</li>
+        </ul>
+        <a class="btn btn-primary price-btn" href="/app">Probar 14 días gratis</a>
+      </article>
+      <article class="card price-card">
+        <p class="eyebrow">Hasta 4 profesionales</p>
+        <h3>Consultorio</h3>
+        <p class="price-val">$59.000 <span>COP / mes</span></p>
+        <p class="muted price-sub">o $590.000 COP / año (2 meses gratis)</p>
+        <ul class="ticks">
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Todo lo del plan Independiente</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Varios veterinarios y auxiliares en la misma clínica</li>
+          <li><svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Soporte prioritario directo por WhatsApp</li>
+        </ul>
+        <a class="btn btn-tint price-btn" href="/app">Probar 14 días gratis</a>
+      </article>
+    </div>
+    <p class="muted pricing-foot">
+      Pago seguro por PSE, tarjeta o Nequi (Mercado Pago). Cancela cuando quieras y conserva siempre tus historias descargables. Operado en Colombia por <strong>GeosData</strong> · <a href="mailto:hola@geosdata.com">hola@geosdata.com</a> · <a href="https://wa.me/573156189586?text=Hola,%20tengo%20una%20pregunta%20sobre%20Historia%20Veterinaria" target="_blank" rel="noopener noreferrer">WhatsApp soporte</a>.
+    </p>
+  </section>
+
   <section class="wrap cta-band">
     <div class="card cta-band__card">
       <div>
         <h2>Genera tu primera historia clínica ahora</h2>
         <p class="muted">Toma dos minutos. No pedimos correo ni tarjeta.</p>
       </div>
-      <a class="btn btn-primary" href="/generador-historia-clinica-veterinaria">Abrir el generador</a>
+      <div class="hero__cta" style="margin-top:0">
+        <a class="btn btn-primary" href="/generador-historia-clinica-veterinaria">Abrir el generador</a>
+        <a class="btn btn-tint" href="/app">Entrar a la app</a>
+      </div>
     </div>
   </section>
 </Base>
@@ -93,12 +143,20 @@ import Base from "../layouts/Base.astro";
   .hero__panel em { font-style: normal; color: var(--pine-700); font-weight: 600; }
   .ticks { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 0.6rem; }
   .ticks li { display: flex; align-items: center; gap: 0.6rem; font-size: 0.98rem; }
-  .ticks .icon { color: var(--pine-500); }
+  .ticks .icon { color: var(--pine-500); flex: none; }
 
   .band { padding: 4rem 1.25rem 1rem; }
-  .band__sub { max-width: 60ch; font-size: 1.05rem; }
+  .band__sub { max-width: 64ch; font-size: 1.05rem; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 2rem; }
   .icon-lg { width: 1.9rem; height: 1.9rem; color: var(--pine-500); margin-bottom: 0.6rem; }
+  .price-card { display: flex; flex-direction: column; }
+  .price-featured { background: var(--pine-50); border: 2px solid var(--pine-500); }
+  .price-val { font-size: 1.85rem; font-weight: 800; margin: 0.35rem 0 0; color: var(--ink); }
+  .price-val span { font-size: 0.92rem; font-weight: 600; color: var(--ink-soft); }
+  .price-sub { font-size: 0.88rem; margin: 0.15rem 0 0; }
+  .price-btn { margin-top: auto; padding-top: 0.7rem; text-align: center; justify-content: center; margin-top: 1.4rem; }
+  .pricing-foot { margin-top: 1.25rem; font-size: 0.92rem; }
+  .pricing-foot a { color: var(--pine-700); font-weight: 600; }
 
   .cta-band { padding: 3.5rem 1.25rem 0; }
   .cta-band__card {
