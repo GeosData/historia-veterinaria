@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     database_url: str = ""
     allowed_origins: list[str] = ["*"]
     firebase_project_id: str = ""
+    billing_api_url: str = "https://api-billing-gnh2pfoe5q-ue.a.run.app"
+    billing_api_key: str = ""
 
 
 @lru_cache

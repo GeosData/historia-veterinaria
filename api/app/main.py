@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.routes import (
+    billing,
     clinic_vets,
     clinics,
     consultations,
@@ -40,6 +41,7 @@ def create_app() -> FastAPI:
     app.include_router(consultations.router)
     app.include_router(vaccines.router)
     app.include_router(reminders.router)
+    app.include_router(billing.router)
 
     return app
 

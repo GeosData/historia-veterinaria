@@ -8,6 +8,7 @@ import { PatientDetailPage } from './pages/PatientDetailPage'
 import { PatientsPage } from './pages/PatientsPage'
 import { RemindersPage } from './pages/RemindersPage'
 import { SpeciesSettingsPage } from './pages/SettingsPage'
+import { BillingPage } from './pages/BillingPage'
 
 export function App() {
   return (
@@ -24,6 +25,7 @@ export function App() {
               <Route path="/recordatorios" element={<RemindersPage />} />
               <Route path="/ajustes" element={<Navigate to="/ajustes/especies" replace />} />
               <Route path="/ajustes/especies" element={<SpeciesSettingsPage />} />
+              <Route path="/ajustes/plan" element={<BillingPage />} />
             </Route>
           </Route>
         </Route>

@@ -22,7 +22,10 @@ const navItems: NavItem[] = [
     to: '/ajustes',
     label: 'Ajustes',
     icon: GearIcon,
-    children: [{ to: '/ajustes/especies', label: 'Especies' }],
+    children: [
+      { to: '/ajustes/especies', label: 'Especies' },
+      { to: '/ajustes/plan', label: 'Plan y cobro' },
+    ],
   },
 ]
 

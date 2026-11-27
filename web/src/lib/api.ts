@@ -118,6 +118,11 @@ export const api = {
   createOwner: (clinicId: string, input: OwnerCreate) =>
     request<Owner>(`/clinics/${clinicId}/owners`, { method: 'POST', body: input }),
 
+  getBillingSubscription: () =>
+    request<{ app_id: string; status: string; plan_name: string; trial_days: number }>('/billing/subscription'),
+  createBillingSubscription: () =>
+    request<{ init_point: string }>('/billing/subscribe', { method: 'POST' }),
+
   listPatients: (clinicId: string) =>
     request<PatientListItem[]>(`/clinics/${clinicId}/patients`),
   createPatient: (clinicId: string, input: PatientCreate) =>
